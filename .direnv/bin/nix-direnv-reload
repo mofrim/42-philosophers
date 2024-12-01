@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -e
+if [[ ! -d "/home/frido/c0de/42/theCore/10-philosophers/philoGH" ]]; then
+  echo "Cannot find source directory; Did you move it?"
+  echo "(Looking for "/home/frido/c0de/42/theCore/10-philosophers/philoGH")"
+  echo 'Cannot force reload with this script - use "direnv reload" manually and then try again'
+  exit 1
+fi
+
+# rebuild the cache forcefully
+_nix_direnv_force_reload=1 direnv exec "/home/frido/c0de/42/theCore/10-philosophers/philoGH" true
+
+# Update the mtime for .envrc.
+# This will cause direnv to reload again - but without re-building.
+touch "/home/frido/c0de/42/theCore/10-philosophers/philoGH/.envrc"
+
+# Also update the timestamp of whatever profile_rc we have.
+# This makes sure that we know we are up to date.
+touch -r "/home/frido/c0de/42/theCore/10-philosophers/philoGH/.envrc" "/home/frido/c0de/42/theCore/10-philosophers/philoGH/.direnv"/*.rc
