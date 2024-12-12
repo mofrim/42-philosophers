@@ -6,25 +6,26 @@
 #    By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/01 11:45:58 by fmaurer           #+#    #+#              #
-#    Updated: 2024/12/01 11:57:14 by fmaurer          ###   ########.fr        #
+#    Updated: 2024/12/12 21:42:23 by fmaurer          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME 		= philo
-SRC_IN	= ./philo.c
+SRC_IN	= ./philo.c \
+					./utils.c
 SRC			= $(patsubst ./%.c,%.c,$(SRC_IN))
 OBJDIR	= obj
 OBJS		= $(patsubst %.c,$(OBJDIR)/%.o,$(SRC))
-CFLAGS	= -pthread
-HDR			=
+CFLAGS	= -pthread -g
+HDR			= philo.h
 
 all: $(NAME)
 
 $(OBJDIR):
 	mkdir -p $(OBJDIR)
 
-$(OBJDIR)/%.o: $(SRC) $(HDR) | $(OBJDIR)
-	clang -c -o $@ $^
+$(OBJDIR)/%.o: %.c $(HDR) | $(OBJDIR)
+	clang $(CFLAGS) -c $< -o $@
 
 $(NAME): $(OBJS)
 	clang $(CFLAGS) -o $@ $^

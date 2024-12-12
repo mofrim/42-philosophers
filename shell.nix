@@ -9,6 +9,7 @@
 pkgs.mkShell {
   name = "philo";
   buildInputs = with pkgs; [
+    clang-tools
     clang_12
   ];
   shellHook = ''
