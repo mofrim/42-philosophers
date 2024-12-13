@@ -6,17 +6,20 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 11:53:00 by fmaurer           #+#    #+#             */
-/*   Updated: 2024/12/12 22:25:00 by fmaurer          ###   ########.fr       */
+/*   Updated: 2024/12/13 07:33:28 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+// TODO: refactor! normify!
+
 #include "philo.h"
-#include "pthread.h"
 #include <stdio.h>
 #include <string.h>
 
 t_philo	*init_philos(char **av, int argnum);
 void	philo(void *phv); int	all_are_dead(t_philo *ph);
+int		any_dead(t_philo *ph);
+int		all_are_fed(t_philo *ph);
 
 int	main(int ac, char **av)
 {
@@ -29,23 +32,19 @@ int	main(int ac, char **av)
 		philos = init_philos(av, ac);
 	else
 		printf("usage: %s num_of_philos ttd tte tts (numoftimes_to_eat)\n", av[0]);
-	// print_philo_data(philos[0]);
 	while (1)
 	{
-		usleep(200000);
-		// if (all_are_dead(philos))
-		// {
-		// 	printf("All are dead :(\n");
-		// 	return (1);
-		// }
-		if (all_are_dead(philos))
+		usleep(10000); // sleep 10ms
+		if (any_dead(philos))
+			exit(42);
+		if (all_are_dead(philos) || all_are_fed(philos))
 			return (1);
 	}
-	// for (int i = 0; i < num_of_philos; i++)
-	// {
-	// 	pthread_join(philos[i].phil_threads[i], NULL);
-	// 	pthread_mutex_destroy(&philos[i].forks[i]);
-	// }
+	for (int i = 0; i < num_of_philos; i++)
+	{
+		pthread_join(philos[i].phil_threads[i], NULL);
+		pthread_mutex_destroy(&philos[i].forks[i]);
+	}
 	return (0);
 }
 
@@ -58,6 +57,37 @@ int	all_are_dead(t_philo *ph)
 		if (ph[i].status != 2)
 			return (0);
 	return (1);
+}
+
+int	all_are_fed(t_philo *ph)
+{
+	int	i;
+
+	i = -1;
+	while (++i < ph[0].num_of_philos)
+		if (ph[i].status != 1)
+			return (0);
+	return (1);
+}
+
+int	any_dead(t_philo *ph)
+{
+	int		i;
+	long	time;
+
+	i = -1;
+	time = gettime();
+	while (++i < ph[0].num_of_philos)
+	{
+		if (time - ph[i].last_meal_start > ph[0].time_to_die && \
+				ph[i].status == 0)
+		{
+			ph[i].status = 2;
+			printf("%ld %d died\n", time - ph[i].t0, ph[i].id);
+			return (1);
+		}
+	}
+	return (0);
 }
 
 t_philo	*init_philos(char **av, int argnum)
@@ -97,11 +127,33 @@ t_philo	*init_philos(char **av, int argnum)
 		philos[i].last_meal_start = time0;
 		philos[i].num_of_philos = phils;
 		philos[i].time_to_die = ft_atoi(av[2]);
+		if (philos[i].time_to_die <= 0)
+		{
+			printf("Time to die invalid.\n");
+			exit(42);
+		}
 		philos[i].time_to_eat = ft_atoi(av[3]);
+		if (philos[i].time_to_eat <= 0)
+		{
+			printf("Time to eat invalid.\n");
+			exit(42);
+		}
 		philos[i].time_to_sleep = ft_atoi(av[4]);
+		if (philos[i].time_to_sleep <= 0)
+		{
+			printf("Time to sleep invalid.\n");
+			exit(42);
+		}
 		philos[i].num_of_meals = 0;
 		if (argnum == 6)
+		{
 			philos[i].max_meals = ft_atoi(av[5]);
+			if (philos[i].max_meals <= 0)
+			{
+				printf("max_meals invalid.\n");
+				exit(42);
+			}
+		}
 		philos[i].status = 0; // 0 = normal, 1 = done, 2 = dead
 		philos[i].forks = forks;
 		philos[i].phil_threads = threads;
@@ -123,36 +175,34 @@ void	philo(void *phv)
 {
 	t_philo	*ph;
 
+	ph = (t_philo *)phv;
 	while (1)
 	{
-		// if (!ph->num_of_meals)
-		// 	if (!(ph->id % 2))
-		// 		usleep((ph->time_to_eat/2) * 1000);
-		// if (ph->num_of_meals && ph->num_of_meals == ph->max_meals)
-		if (ph->num_of_meals == ph->max_meals)
+		if (ph->status == 2)
+			return ;
+		if (!ph->num_of_meals)
+			if (!(ph->id % 2))
+				usleep((ph->time_to_eat/2) * 1000);
+		if (ph->num_of_meals && ph->num_of_meals == ph->max_meals)
 		{
 			ph->status = 1;
 			return ;
 		}
-		if (gettime() - ph->last_meal_start > ph->time_to_die)
-		{
-			ph->status = 2;
-			printf("%ld %d died\n", gettime() - ph->t0, ph->id);
-			return ;
-		}
-		ph = (t_philo *)phv;
 
 		/* eat */
-		pthread_mutex_lock(&ph->forks[ph->id]);
+		pthread_mutex_lock(&ph->forks[ph->id - 1]);
 		printf("%ld %d has taken a fork\n", gettime() - ph->t0 , ph->id);
-		pthread_mutex_lock(&ph->forks[(ph->id + 1) % ph->num_of_philos]);
-		printf("%ld %d has taken a fork\n", gettime() - ph->t0 , ph->id);
-		ph->last_meal_start = gettime();
-		printf("%ld %d is eating\n",ph->last_meal_start - ph->t0, ph->id);
-		usleep(ph->time_to_eat * 1000);
-		pthread_mutex_unlock(&ph->forks[ph->id]);
-		pthread_mutex_unlock(&ph->forks[(ph->id + 1) % ph->num_of_philos]);
-		ph->num_of_meals++;
+		if (ph->num_of_philos != 1)
+		{
+			pthread_mutex_lock(&ph->forks[(ph->id) % ph->num_of_philos]);
+			printf("%ld %d has taken a fork\n", gettime() - ph->t0 , ph->id);
+			ph->last_meal_start = gettime();
+			printf("%ld %d is eating\n",ph->last_meal_start - ph->t0, ph->id);
+			usleep(ph->time_to_eat * 1000);
+			pthread_mutex_unlock(&ph->forks[(ph->id) % ph->num_of_philos]);
+			ph->num_of_meals++;
+		}
+		pthread_mutex_unlock(&ph->forks[ph->id - 1]);
 
 		/* sleep */
 		printf("%ld %d is sleeping\n", gettime() - ph->t0, ph->id);
