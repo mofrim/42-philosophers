@@ -6,13 +6,15 @@
 #    By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/01 11:45:58 by fmaurer           #+#    #+#              #
-#    Updated: 2024/12/12 21:42:23 by fmaurer          ###   ########.fr        #
+#    Updated: 2024/12/14 20:49:24 by fmaurer          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME 		= philo
 SRC_IN	= ./philo.c \
-					./utils.c
+					./utils.c \
+					./philo_routine.c \
+					./init_philo.c
 SRC			= $(patsubst ./%.c,%.c,$(SRC_IN))
 OBJDIR	= obj
 OBJS		= $(patsubst %.c,$(OBJDIR)/%.o,$(SRC))

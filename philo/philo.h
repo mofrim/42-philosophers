@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 12:35:39 by fmaurer           #+#    #+#             */
-/*   Updated: 2024/12/12 23:26:37 by fmaurer          ###   ########.fr       */
+/*   Updated: 2024/12/15 11:51:08 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,9 @@
 /* usleep(),  */
 # include <unistd.h>
 
+/* memset */
+# include <string.h>
+
 typedef struct s_philo
 {
 	long int		t0;
@@ -46,5 +49,8 @@ typedef struct s_philo
 
 int			ft_atoi(char *s);
 long int	gettime(void);
-void	print_philo_data(t_philo p);
+void		print_philo_data(t_philo p);
+void		*philo(void	*phv);
+t_philo		*init_philos(char **av, int argnum);
+void		*nullmsg(char *msg);
 #endif
