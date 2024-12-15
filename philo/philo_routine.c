@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 20:42:36 by fmaurer           #+#    #+#             */
-/*   Updated: 2024/12/15 20:41:53 by fmaurer          ###   ########.fr       */
+/*   Updated: 2024/12/15 20:46:40 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,14 +24,10 @@ void	*philo(void *phv)
 	while (1)
 	{
 		if (ph->status == 2)
-		{
-			printf(">> philo %d terminates thread. cause: death\n", ph->id);
 			return (NULL);
-		}
 		ph_initial_sleep(ph);
 		if (ph->num_of_meals && ph->num_of_meals == ph->max_meals)
 		{
-			printf(">> philo %d terminates thread. cause: fed up\n", ph->id);
 			ph->status = 1;
 			return (NULL);
 		}
@@ -40,7 +36,6 @@ void	*philo(void *phv)
 		if (!ph->status)
 			printf("%ld %d is thinking\n", gettime() - ph->t0, ph->id);
 	}
-	return (NULL);
 }
 
 void	ph_initial_sleep(t_philo *ph)
@@ -48,15 +43,9 @@ void	ph_initial_sleep(t_philo *ph)
 	if (!ph->num_of_meals)
 	{
 		if (!(ph->num_of_philos % 2) && !(ph->id % 2))
-		{
-			printf("philo %d sleeping before start\n", ph->id);
 			usleep((ph->time_to_eat / 2) * 1000);
-		}
 		if ((ph->num_of_philos % 2) && (ph->id % 2))
-		{
-			printf("philo %d sleeping before start\n", ph->id);
 			usleep((ph->time_to_eat / 2) * 1000);
-		}
 	}
 }
 

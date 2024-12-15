@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 11:53:00 by fmaurer           #+#    #+#             */
-/*   Updated: 2024/12/15 20:32:23 by fmaurer          ###   ########.fr       */
+/*   Updated: 2024/12/15 20:47:49 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ int		all_are_dead_or_fed(t_philo *ph);
 int	main(int ac, char **av)
 {
 	t_philo	*philos;
-	int		num_of_philos;
 
 	if (5 <= ac && ac <= 6)
 		philos = init_philos(av, ac);

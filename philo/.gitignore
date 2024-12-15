@@ -1,0 +1,9 @@
+*
+
+!.gitignore
+!./Makefile
+!./philo.c
+!./philo_routine.c
+!./utils.c
+!./init_philo.c
+!./philo.h
