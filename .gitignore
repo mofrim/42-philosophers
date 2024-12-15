@@ -1,2 +1,10 @@
-philo/philo
-philo/obj/
+*
+.cache/
+
+!.gitignore
+!philo/Makefile
+!philo/philo.c
+!philo/philo_routine.c
+!philo/utils.c
+!philo/init_philo.c
+!philo/philo.h
