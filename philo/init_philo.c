@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 20:44:24 by fmaurer           #+#    #+#             */
-/*   Updated: 2024/12/15 11:52:14 by fmaurer          ###   ########.fr       */
+/*   Updated: 2024/12/16 09:49:36 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,4 +104,5 @@ void	init_common_params(t_philo	*ph, char **av, int id)
 	ph->time_to_sleep = ft_atoi(av[4]);
 	ph->num_of_meals = 0;
 	ph->status = 0;
+	ph->max_meals = 0;
 }

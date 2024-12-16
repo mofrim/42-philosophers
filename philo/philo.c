@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 11:53:00 by fmaurer           #+#    #+#             */
-/*   Updated: 2024/12/15 20:47:49 by fmaurer          ###   ########.fr       */
+/*   Updated: 2024/12/16 11:55:44 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int		any_dead(t_philo *ph);
 void	cleanup(t_philo **ph);
-int		all_are_dead_or_fed(t_philo *ph);
+int		all_are_fed(t_philo *ph);
 
 int	main(int ac, char **av)
 {
@@ -30,23 +30,22 @@ int	main(int ac, char **av)
 	while (1)
 	{
 		usleep(9000);
-		any_dead(philos);
-		if (all_are_dead_or_fed(philos))
+		if (any_dead(philos) || all_are_fed(philos))
 		{
-			printf("All are dead or fed.\n");
+			printf("One philo dead or all fed.\n");
 			cleanup(&philos);
 			return (1);
 		}
 	}
 }
 
-int	all_are_dead_or_fed(t_philo *ph)
+int	all_are_fed(t_philo *ph)
 {
 	int	i;
 
 	i = -1;
 	while (++i < ph[0].num_of_philos)
-		if (ph[i].status == 0)
+		if (ph[i].status != 1)
 			return (0);
 	return (1);
 }
@@ -61,15 +60,13 @@ int	any_dead(t_philo *ph)
 	time = gettime();
 	philo_died = 0;
 	while (++i < ph[0].num_of_philos)
-	{
 		if (time - ph[i].last_meal_start > ph[0].time_to_die && \
 				ph[i].status == 0)
-		{
+			philo_died = printf("%ld %d died\n", time - ph[i].t0, ph[i].id);
+	i = -1;
+	if (philo_died)
+		while (++i < ph[0].num_of_philos)
 			ph[i].status = 2;
-			printf("%ld %d died\n", time - ph[i].t0, ph[i].id);
-			philo_died = 1;
-		}
-	}
 	if (philo_died)
 		return (1);
 	return (0);
@@ -91,19 +88,17 @@ void	cleanup(t_philo **ph)
 	int	err;
 	int	num_of_philos;
 
-	i = 0;
 	num_of_philos = ph[0]->num_of_philos;
-	while (i < num_of_philos)
+	i = -1;
+	while (++i < num_of_philos)
+		pthread_join(ph[0]->phil_threads[i], NULL);
+	i = -1;
+	while (++i < num_of_philos)
 	{
+		// FIXME: remove msg printing before submission
 		err = pthread_mutex_destroy(&ph[0]->forks[i]);
 		if (err != 0)
-		{
-			printf("mutex destroy failed for philo %d\n", i + 1);
-			printf("err = %d\n", err);
-		}
-		err = pthread_mutex_destroy(&ph[0]->forks[i]);
-		pthread_join(ph[0]->phil_threads[i], NULL);
-		i++;
+			printf("mutex destroy failed for mutex %d, err = %d\n", i, err);
 	}
 	free(ph[0]->phil_threads);
 	free(ph[0]->forks);

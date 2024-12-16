@@ -6,16 +6,17 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 20:42:36 by fmaurer           #+#    #+#             */
-/*   Updated: 2024/12/15 20:46:40 by fmaurer          ###   ########.fr       */
+/*   Updated: 2024/12/16 11:54:08 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	ph_initial_sleep(t_philo *ph);
-void	ph_eat(t_philo *ph);
-void	ph_sleep(t_philo *ph);
+static void	ph_initial_sleep(t_philo *ph);
+static void	ph_eat(t_philo *ph);
+static void	ph_sleep(t_philo *ph);
 
+/* The main philosopher thread routine. */
 void	*philo(void *phv)
 {
 	t_philo	*ph;
@@ -49,15 +50,26 @@ void	ph_initial_sleep(t_philo *ph)
 	}
 }
 
+/**
+ * The eating function of philo.
+ *
+ * To avoid corrupting mutex state by mutliple mutex_unlocks, i intruduced the
+ * 'locked' flag. This ensures even in case we enter this function in a already
+ * dead state (which could happen if philo dies during initial sleep) that
+ * mutex_unlock is not called on a not locked mutex. This could lead to errors
+ * later especially mutex_destroy reports errno 16 (EBUSY) with mutexes like
+ * this.
+ */
 void	ph_eat(t_philo *ph)
 {
+	int	locked;
+
+	locked = 0;
 	if (!ph->status)
 	{
-		pthread_mutex_lock(&ph->forks[ph->id - 1]);
+		locked = !(pthread_mutex_lock(&ph->forks[ph->id - 1]));
 		if (!ph->status)
 			printf("%ld %d has taken a fork\n", gettime() - ph->t0, ph->id);
-		else
-			pthread_mutex_unlock(&ph->forks[ph->id - 1]);
 	}
 	if (ph->num_of_philos != 1 && !ph->status)
 	{
@@ -68,15 +80,15 @@ void	ph_eat(t_philo *ph)
 			ph->last_meal_start = gettime();
 			printf("%ld %d is eating\n", ph->last_meal_start - ph->t0, ph->id);
 			usleep(ph->time_to_eat * 1000);
-			pthread_mutex_unlock(&ph->forks[(ph->id) % ph->num_of_philos]);
 			ph->num_of_meals++;
 		}
-		else
-			pthread_mutex_unlock(&ph->forks[(ph->id) % ph->num_of_philos]);
+		pthread_mutex_unlock(&ph->forks[(ph->id) % ph->num_of_philos]);
 	}
-	pthread_mutex_unlock(&ph->forks[ph->id - 1]);
+	if (locked)
+		pthread_mutex_unlock(&ph->forks[ph->id - 1]);
 }
 
+/* Sleeping function nothing interesting happening here. */
 void	ph_sleep(t_philo *ph)
 {
 	if (!ph->status)
