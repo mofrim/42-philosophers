@@ -71,11 +71,17 @@ appropriate use cases.
 
 # chat about semaphores
 
-Certainly! Below is a meaningful example in C that demonstrates the use of POSIX named semaphores with the functions `sem_open`, `sem_close`, `sem_post`, `sem_wait`, and `sem_unlink`. This example simulates a producer-consumer scenario where a producer generates data and a consumer processes it, using a semaphore to synchronize access to a shared resource.
+Certainly! Below is a meaningful example in C that demonstrates the use of POSIX
+named semaphores with the functions `sem_open`, `sem_close`, `sem_post`,
+`sem_wait`, and `sem_unlink`. This example simulates a producer-consumer
+scenario where a producer generates data and a consumer processes it, using a
+semaphore to synchronize access to a shared resource.
 
 ### Example: Producer-Consumer with Named Semaphores
 
-In this example, we will create a producer that generates integers and a consumer that consumes them. The producer will signal the consumer using a semaphore.
+In this example, we will create a producer that generates integers and a
+consumer that consumes them. The producer will signal the consumer using a
+semaphore.
 
 #### Code
 
@@ -174,19 +180,25 @@ int main() {
 
 ### Explanation
 
-1. **Buffer and Counters**: We define a buffer of fixed size (`BUFFER_SIZE`) and a counter (`count`) to keep track of the number of items in the buffer.
+1. **Buffer and Counters**: We define a buffer of fixed size (`BUFFER_SIZE`) and
+   a counter (`count`) to keep track of the number of items in the buffer.
 
 2. **Named Semaphores**:
-   - `empty`: This semaphore counts the number of empty slots in the buffer. It is initialized to `BUFFER_SIZE`.
-   - `full`: This semaphore counts the number of full slots in the buffer. It is initialized to `0`.
+   - `empty`: This semaphore counts the number of empty slots in the buffer. It
+     is initialized to `BUFFER_SIZE`.
+   - `full`: This semaphore counts the number of full slots in the buffer. It is
+     initialized to `0`.
 
 3. **Producer Function**:
-   - The producer generates random integers and waits for an empty slot using `sem_wait(empty)`.
-   - It adds the item to the buffer and signals that a new item is available using `sem_post(full)`.
+   - The producer generates random integers and waits for an empty slot using
+     `sem_wait(empty)`.
+   - It adds the item to the buffer and signals that a new item is available
+     using `sem_post(full)`.
 
 4. **Consumer Function**:
    - The consumer waits for a full slot using `sem_wait(full)`.
-   - It removes an item from the buffer and signals that an empty slot is available using `sem_post(empty)`.
+   - It removes an item from the buffer and signals that an empty slot is
+     available using `sem_post(empty)`.
 
 5. **Main Function**:
    - The main function creates the named semaphores using `sem_open`.
@@ -204,5 +216,7 @@ gcc -o producer_consumer producer_consumer.c -lpthread -lrt
 
 ### Important Notes
 
-- **Semaphore Names**: Named semaphores are identified by a name (e.g., `"/empty"` and `"/full"`). The leading `/` is required for named semaphores.
-- **Error Handling**: In a production scenario, you should add more robust error handling for thread creation and semaphore
+- **Semaphore Names**: Named semaphores are identified by a name (e.g.,
+  `"/empty"` and `"/full"`). The leading `/` is required for named semaphores.
+- **Error Handling**: In a production scenario, you should add more robust error
+  handling for thread creation and semaphore
