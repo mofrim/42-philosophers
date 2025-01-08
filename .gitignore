@@ -1,7 +1,7 @@
 *
 .cache/
-
-!.gitignore
+.gitignore
+!philo/
 !philo/Makefile
 !philo/philo.c
 !philo/philo_routine.c

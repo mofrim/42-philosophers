@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 20:42:36 by fmaurer           #+#    #+#             */
-/*   Updated: 2024/12/16 11:54:08 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/08 09:54:03 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@ void	*philo(void *phv)
 	}
 }
 
+/* Well this is my simple synchronization. Make every 2nd philosopher sleep half
+ * of eating time to avoid deadlock from the start. */
 void	ph_initial_sleep(t_philo *ph)
 {
 	if (!ph->num_of_meals)
