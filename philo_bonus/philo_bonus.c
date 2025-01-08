@@ -6,26 +6,27 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 11:53:00 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/08 17:47:44 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/08 20:39:42 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
 t_philo	*parse_philo(int ac, char **av, int philno);
-void	summon_philos(int philno, sem_t *forks, t_philo *pp);
+int		*summon_philos(int philno, sem_t *forks, t_philo *pp);
 void	*killer_thread(void *arg);
 
 int	main(int ac, char **av)
 {
 	sem_t	*forks;
+	sem_t	*deathaphore;
 	int		philno;
 	t_philo	*proto_philo;
-	pid_t	dummy;
+	int		*pids;
+	int		i;
 
-	// if philo_bonus from before ended with a crash or signal.
 	sem_unlink("/forks");
-
+	sem_unlink("/death");
 	if ((5 <= ac && ac <= 6) && !check_invalid_params(av, ac))
 		printf("go philo go!\n");
 	else
@@ -33,60 +34,52 @@ int	main(int ac, char **av)
 					" (numoftimes_to_eat)"), 22);
 	philno = ft_atoi(av[1]);
 	forks = sem_open("/forks", O_CREAT, 0644, philno);
+	deathaphore = sem_open("/death", O_CREAT, 0644, 0);
 	if (forks == SEM_FAILED)
 	{
 		printf("opening sem failed, errno: %d\n", errno);
 		exit(errno);
 	}
 	proto_philo = parse_philo(ac, av, philno);
-	dummy = fork();
-	if (dummy < 0)
-	{
-		printf("fork failed!\n");
-		exit(errno);
-	}
-	if (dummy == 0)
-	{
-		summon_philos(philno, forks, proto_philo);
-		if(waitpid(-1, NULL, 0) != -1)
-			printf("a philo has died!\n");
-		// while ((waitpid(-1, NULL, 0) != -1) && errno != ECHILD)
-		// 	;
-		exit(0);
-	}
-	else
-	{
-		if(waitpid(-1, NULL, 0) != -1)
-			printf("a philo has died!\n");
-		kill(-dummy, SIGINT);
-	}
+	pids = summon_philos(philno, forks, proto_philo);
+	if(waitpid(-1, NULL, 0) != -1)
+		printf(">>> a philo has died!\n");
+	i = -1;
+	while (++i < philno)
+		kill(pids[i], SIGTERM);
+	free(pids);
 	sem_close(forks);
 	sem_unlink("/forks");
 	return (0);
 }
 
-void	summon_philos(int philno, sem_t *forks, t_philo *pp)
+int	*summon_philos(int philno, sem_t *forks, t_philo *pp)
 {
 	int	i;
 	int	ppid;
 	long int	time0;
+	int			*pids;
 
 	i = -1;
 
 	time0 = gettime();
+	pids = malloc(sizeof(int) * philno);
 	while (++i < philno)
 	{
 		pp->id = i + 1;
 		pp->t0 = time0;
 		ppid = fork();
 		if (ppid < 0)
-			return ;
+			return (NULL);
+		if (ppid != 0)
+			pids[i] = ppid;
 		if (ppid == 0)
 		{
 			pthread_t	killerthread;
 			int			gotfork = 0;
 			int long	meal_start;
 
+			free(pids);
 			if (pthread_create(&killerthread, NULL, killer_thread, (void *)pp) != 0)
 			{
 				printf("Thread creation failed");
@@ -94,9 +87,10 @@ void	summon_philos(int philno, sem_t *forks, t_philo *pp)
 			}
 			pthread_detach(killerthread);
 
-			if (pp->id % 2)
+			if ((philno % 2) && pp->id % 2)
 				usleep((pp->time_to_eat / 2) * 1000);
-			// printf("philo no.%d, time0: %ld\n", pp->id, pp->t0);
+			if (!(philno % 2) && !pp->id % 2)
+				usleep((pp->time_to_eat / 2) * 1000);
 
 			while (1)
 			{
@@ -104,14 +98,14 @@ void	summon_philos(int philno, sem_t *forks, t_philo *pp)
 				gotfork = 0;
 				if (!pp->status)
 				{
-					gotfork = 1;
 					sem_wait(forks);
+					gotfork++;
 					printf("%ld %d has taken a fork\n", gettime() - pp->t0, pp->id);
 				}
 				if (!pp->status)
 				{
-					gotfork++;
 					sem_wait(forks);
+					gotfork++;
 					printf("%ld %d has taken a fork\n", gettime() - pp->t0, pp->id);
 				}
 				if (!pp->status && gotfork == 2)
@@ -138,12 +132,13 @@ void	summon_philos(int philno, sem_t *forks, t_philo *pp)
 
 				if (pp->status)
 				{
-					printf("philo %d calling exit\n", pp->id);
+					printf(">>> %ld %d calling exit\n", gettime() - pp->t0, pp->id);
 					exit(0);
 				}
 			}
 		}
 	}
+	return (pids);
 }
 
 void	*killer_thread(void *arg)
@@ -160,9 +155,8 @@ void	*killer_thread(void *arg)
 		{
 			printf("%ld %d died\n", time, ph->id);
 			ph->status = 2;
-		}
-		if (ph->status)
 			return (NULL);
+		}
 	}
 }
 
