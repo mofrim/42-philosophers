@@ -6,12 +6,11 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 09:03:17 by fmaurer           #+#    #+#             */
-/*   Updated: 2024/12/14 21:12:07 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/08 08:37:05 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-#include "sys/time.h"
 
 static int	ft_isspace(char c)
 {
@@ -51,11 +50,4 @@ long int	gettime(void)
 
 	gettimeofday(&tv, NULL);
 	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
-}
-
-/* Return NULL with msg. */
-void	*nullmsg(char *msg)
-{
-	printf("%s\n", msg);
-	return (NULL);
 }

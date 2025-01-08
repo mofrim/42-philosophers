@@ -6,7 +6,7 @@
 #    By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/01 11:45:58 by fmaurer           #+#    #+#              #
-#    Updated: 2024/12/16 09:35:27 by fmaurer          ###   ########.fr        #
+#    Updated: 2025/01/08 08:48:39 by fmaurer          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ SRC_IN	= ./philo.c \
 SRC			= $(patsubst ./%.c,%.c,$(SRC_IN))
 OBJDIR	= obj
 OBJS		= $(patsubst %.c,$(OBJDIR)/%.o,$(SRC))
-CFLAGS	= -g -Wall -Werror -Wextra -pthread
+CFLAGS	= -Wall -Werror -Wextra -pthread
 HDR			= philo.h
 
 all: $(NAME)
@@ -36,7 +36,7 @@ clean:
 	rm -rf $(OBJDIR)
 
 fclean: clean
-	rm $(NAME)
+	rm -f $(NAME)
 
 re: fclean $(NAME)
 

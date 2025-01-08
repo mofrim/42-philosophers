@@ -6,20 +6,20 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 12:35:39 by fmaurer           #+#    #+#             */
-/*   Updated: 2024/12/15 11:51:08 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/08 08:37:23 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_H
 # define PHILO_H
 
-/* Printf */
+/* printf */
 # include <stdio.h>
 
-/* For everything thread related */
+/* for everything thread related */
 # include <pthread.h>
 
-/* For malloc */
+/* for malloc */
 # include <stdlib.h>
 
 /* gettimeofday */

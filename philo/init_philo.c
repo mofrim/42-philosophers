@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 20:44:24 by fmaurer           #+#    #+#             */
-/*   Updated: 2024/12/16 09:49:36 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/08 08:48:14 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,9 +57,9 @@ t_philo	*init_philos(char **av, int ac)
 		philos[i].forks = forks;
 		philos[i].phil_threads = threads;
 		if (pthread_mutex_init(&forks[i], NULL) != 0)
-			return (nullmsg("Mutex init failed"));
+			return (printf("Mutex init failed"), NULL);
 		if (pthread_create(&threads[i], NULL, philo, (void *)&philos[i]) != 0)
-			return (nullmsg("Thread creation failed"));
+			return (printf("Thread creation failed"), NULL);
 	}
 	return (philos);
 }
@@ -72,17 +72,10 @@ int	alloc_data_structures(t_philo **philos, pthread_mutex_t **forks, \
 		return (0);
 	*forks = malloc(sizeof(pthread_mutex_t) * phils);
 	if (!forks)
-	{
-		free(philos);
-		return (0);
-	}
+		return(free(philos), 0);
 	*threads = malloc(sizeof(pthread_t) * phils);
 	if (!threads)
-	{
-		free(philos);
-		free(forks);
-		return (0);
-	}
+		return(free(philos), free(forks), 0);
 	memset(*threads, 0, phils * sizeof(pthread_t));
 	memset(*forks, 0, phils * sizeof(pthread_mutex_t));
 	return (1);
