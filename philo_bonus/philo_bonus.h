@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 12:35:39 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/08 13:46:18 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/08 17:25:43 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,12 @@
 /* usleep(), fork */
 # include <unistd.h>
 
+/* waitpid */
+# include <sys/wait.h>
+
+/* errno */
+# include <errno.h>
+
 /* memset */
 # include <string.h>
 
@@ -42,6 +48,12 @@ typedef int	bool;
 # define false 0
 # define true 1
 
+/*
+ * status:
+ * 	- 0: normal / alive
+ * 	- 1: fed
+ * 	- 2: dead
+ */
 typedef struct s_philo
 {
 	long int	t0;
