@@ -1,10 +1,12 @@
 *
-.cache/
+.cache
 .gitignore
 !philo/
 !philo/Makefile
+!philo/README.md
+!philo/init_philo.c
 !philo/philo.c
+!philo/philo.h
 !philo/philo_routine.c
 !philo/utils.c
-!philo/init_philo.c
-!philo/philo.h
+
