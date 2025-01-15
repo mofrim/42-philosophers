@@ -3,7 +3,7 @@
 .gitignore
 !philo/
 !philo/Makefile
-!philo/README.md
+!README.md
 !philo/init_philo.c
 !philo/philo.c
 !philo/philo.h
