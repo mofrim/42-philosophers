@@ -6,21 +6,21 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 12:35:39 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/15 11:09:43 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/15 12:34:07 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PHILO_H
-# define PHILO_H
+#ifndef PHILO_BONUS_H
+# define PHILO_BONUS_H
 
 /* printf */
 # include <stdio.h>
 
 /* guess what... */
-#include <semaphore.h>
+# include <semaphore.h>
 
 /* O_CREAT */
-#include <fcntl.h>
+# include <fcntl.h>
 
 /* for everything thread related */
 # include <pthread.h>
@@ -43,12 +43,13 @@
 /* memset */
 # include <string.h>
 
+/* SEM_MAX_VALUE */
 # include <limits.h>
 
 /* i want a boolean, just for fun */
 typedef int	t_bool;
-# define false 0
-# define true 1
+# define FALSE 0
+# define TRUE 1
 
 /*
  * status:
