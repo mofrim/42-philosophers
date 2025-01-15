@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 12:35:39 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/08 23:31:45 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/15 11:09:43 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@
 # include <limits.h>
 
 /* i want a boolean, just for fun */
-typedef int	bool;
+typedef int	t_bool;
 # define false 0
 # define true 1
 
@@ -76,5 +76,10 @@ int			ft_atoi(char *s);
 long int	gettime(void);
 void		print_philo_data(t_philo p);
 void		*philo(void	*phv);
-bool		check_invalid_params(char **av, int ac);
+t_bool		check_invalid_params(char **av, int ac);
+t_philo		*parse_philo(int ac, char **av, sem_t *death, sem_t *deathcheck);
+void		summon_philos(int philno, t_philo *pp, sem_t *forks);
+void		eat(t_philo *pp, sem_t *forks);
+t_bool		any_dead(t_philo *p);
+
 #endif

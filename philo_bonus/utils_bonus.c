@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 09:03:17 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/08 13:27:18 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/15 10:51:55 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,4 +70,3 @@ bool	check_invalid_params(char **av, int ac)
 			return (true);
 	return (false);
 }
-
