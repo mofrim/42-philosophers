@@ -20,4 +20,5 @@
 !philo_bonus/summon_philos.c
 !philo_bonus/philo_eat.c
 !philo_bonus/any_dead.c
+!philo_bonus/parse_philo.c
 

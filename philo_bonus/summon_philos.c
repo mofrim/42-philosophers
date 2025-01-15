@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/15 10:26:22 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/15 10:58:18 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/15 12:20:59 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,14 +21,10 @@ void	summon_philos(int philno, t_philo *pp, sem_t *forks)
 {
 	int			i;
 	int			ppid;
-	long int	time0;
 
-	time0 = gettime();
 	i = -1;
 	while (++i < philno)
 	{
-		pp->id = i + 1;
-		pp->t0 = time0;
 		ppid = fork();
 		if (ppid < 0)
 			return ;
@@ -40,7 +36,6 @@ void	summon_philos(int philno, t_philo *pp, sem_t *forks)
 static void	philo_subroutine(t_philo *pp, sem_t *forks)
 {
 	pthread_t	killerthread;
-	int long	meal_start;
 
 	start_watchdog_thread(&killerthread, pp);
 	while (1)
