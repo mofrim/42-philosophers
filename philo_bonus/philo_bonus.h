@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 12:35:39 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/08 17:25:43 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/08 23:31:45 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@
 /* memset */
 # include <string.h>
 
+# include <limits.h>
+
 /* i want a boolean, just for fun */
 typedef int	bool;
 # define false 0
@@ -58,7 +60,7 @@ typedef struct s_philo
 {
 	long int	t0;
 	long int	last_meal_start;
-	int			num_of_philos;
+	int			philno;
 	int			time_to_die;
 	int			time_to_eat;
 	int			time_to_sleep;
@@ -66,7 +68,8 @@ typedef struct s_philo
 	int			max_meals;
 	int			status;
 	int			id;
-	int			philno;
+	sem_t		*death;
+	sem_t		*deathcheck;
 }	t_philo;
 
 int			ft_atoi(char *s);

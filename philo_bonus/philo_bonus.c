@@ -6,115 +6,116 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 11:53:00 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/08 20:39:42 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/08 23:36:04 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-t_philo	*parse_philo(int ac, char **av, int philno);
-int		*summon_philos(int philno, sem_t *forks, t_philo *pp);
+t_philo	*parse_philo(int ac, char **av, sem_t *death, sem_t *deathcheck);
+void	summon_philos(int philno, t_philo *pp, sem_t *forks);
+bool	any_dead(t_philo *p);
 void	*killer_thread(void *arg);
 
 int	main(int ac, char **av)
 {
 	sem_t	*forks;
-	sem_t	*deathaphore;
+	sem_t	*death;
+	sem_t	*deathcheck;
 	int		philno;
 	t_philo	*proto_philo;
-	int		*pids;
-	int		i;
 
 	sem_unlink("/forks");
 	sem_unlink("/death");
-	if ((5 <= ac && ac <= 6) && !check_invalid_params(av, ac))
-		printf("go philo go!\n");
-	else
+	sem_unlink("/deathcheck");
+	if (!((5 <= ac && ac <= 6) && !check_invalid_params(av, ac)))
 		return (printf("usage: ./philo num_of_philos ttd tte tts" \
 					" (numoftimes_to_eat)"), 22);
 	philno = ft_atoi(av[1]);
 	forks = sem_open("/forks", O_CREAT, 0644, philno);
-	deathaphore = sem_open("/death", O_CREAT, 0644, 0);
-	if (forks == SEM_FAILED)
+	death = sem_open("/death", O_CREAT, 0644, SEM_VALUE_MAX - 1);
+	deathcheck = sem_open("/deathcheck", O_CREAT, 0644, 1);
+	if (forks == SEM_FAILED || death == SEM_FAILED || deathcheck == SEM_FAILED)
 	{
 		printf("opening sem failed, errno: %d\n", errno);
 		exit(errno);
 	}
-	proto_philo = parse_philo(ac, av, philno);
-	pids = summon_philos(philno, forks, proto_philo);
-	if(waitpid(-1, NULL, 0) != -1)
-		printf(">>> a philo has died!\n");
-	i = -1;
-	while (++i < philno)
-		kill(pids[i], SIGTERM);
-	free(pids);
+	proto_philo = parse_philo(ac, av, death, deathcheck);
+	summon_philos(philno, proto_philo, forks);
+	while (waitpid(-1, NULL, 0) != -1)
+		;
 	sem_close(forks);
+	sem_close(death);
+	sem_close(deathcheck);
 	sem_unlink("/forks");
+	sem_unlink("/death");
+	sem_unlink("/deathcheck");
+	free(proto_philo);
 	return (0);
 }
 
-int	*summon_philos(int philno, sem_t *forks, t_philo *pp)
+void	summon_philos(int philno, t_philo *pp, sem_t *forks)
 {
-	int	i;
-	int	ppid;
+	int			i;
+	int			ppid;
 	long int	time0;
-	int			*pids;
 
 	i = -1;
 
 	time0 = gettime();
-	pids = malloc(sizeof(int) * philno);
 	while (++i < philno)
 	{
 		pp->id = i + 1;
 		pp->t0 = time0;
 		ppid = fork();
 		if (ppid < 0)
-			return (NULL);
-		if (ppid != 0)
-			pids[i] = ppid;
+			return ;
 		if (ppid == 0)
 		{
 			pthread_t	killerthread;
 			int			gotfork = 0;
 			int long	meal_start;
 
-			free(pids);
 			if (pthread_create(&killerthread, NULL, killer_thread, (void *)pp) != 0)
 			{
 				printf("Thread creation failed");
 				exit(1);
 			}
-			pthread_detach(killerthread);
-
-			if ((philno % 2) && pp->id % 2)
-				usleep((pp->time_to_eat / 2) * 1000);
-			if (!(philno % 2) && !pp->id % 2)
-				usleep((pp->time_to_eat / 2) * 1000);
+			// wow! with the tinking trick you dont even need initial sleep!!!
+			// TODO: understand that!
+			//
+			// if ((philno % 2) && pp->id % 2)
+			// 	usleep((pp->time_to_eat / 2) * 1000);
+			// if (!(philno % 2) && !(pp->id % 2))
+			// 	usleep((pp->time_to_eat / 2) * 1000);
 
 			while (1)
 			{
 				//eat
 				gotfork = 0;
-				if (!pp->status)
+				if (!any_dead(pp))
 				{
 					sem_wait(forks);
 					gotfork++;
-					printf("%ld %d has taken a fork\n", gettime() - pp->t0, pp->id);
+					if (!pp->status)
+						printf("%ld %d has taken a fork\n", gettime() - pp->t0, pp->id);
 				}
-				if (!pp->status)
+				if (!any_dead(pp))
 				{
 					sem_wait(forks);
 					gotfork++;
-					printf("%ld %d has taken a fork\n", gettime() - pp->t0, pp->id);
+					if (!pp->status)
+						printf("%ld %d has taken a fork\n", gettime() - pp->t0, pp->id);
 				}
-				if (!pp->status && gotfork == 2)
+				if (!any_dead(pp) && gotfork == 2)
 				{
 					meal_start = gettime() - pp->t0;
-					printf("%ld %d is eating\n", meal_start, pp->id);
 					pp->last_meal_start = meal_start;
-					pp->num_of_meals++;
+					printf("%ld %d is eating\n", meal_start, pp->id);
 					usleep (pp->time_to_eat * 1000);
+					pp->num_of_meals++;
+					if (pp->max_meals && pp->num_of_meals == pp->max_meals)
+						pp->status = 1;
 				}
 				if (gotfork)
 					sem_post(forks);
@@ -122,23 +123,31 @@ int	*summon_philos(int philno, sem_t *forks, t_philo *pp)
 					sem_post(forks);
 
 				// sleep
-				if (!pp->status)
+				if (!any_dead(pp) && !pp->status)
 				{
 					printf("%ld %d is sleeping\n", gettime() - pp->t0, pp->id);
 					usleep (pp->time_to_sleep * 1000);
 				}
-				if (!pp->status)
-					printf("%ld %d is thinking\n", gettime() - pp->t0, pp->id);
-
-				if (pp->status)
+				// thinking... more important than i thought 8>
+				if (!any_dead(pp) && !pp->status)
 				{
-					printf(">>> %ld %d calling exit\n", gettime() - pp->t0, pp->id);
+					printf("%ld %d is thinking\n", gettime() - pp->t0, pp->id);
+					if (pp->philno % 2)
+						usleep((pp->time_to_eat * 2 - pp->time_to_sleep) * 1000);
+				}
+
+				if (any_dead(pp) || pp->status)
+				{
+					pthread_join(killerthread, NULL);
+					sem_close(forks);
+					sem_close(pp->death);
+					sem_close(pp->deathcheck);
+					free(pp);
 					exit(0);
 				}
 			}
 		}
 	}
-	return (pids);
 }
 
 void	*killer_thread(void *arg)
@@ -155,19 +164,22 @@ void	*killer_thread(void *arg)
 		{
 			printf("%ld %d died\n", time, ph->id);
 			ph->status = 2;
+			sem_post(ph->death);
 			return (NULL);
 		}
+		if (any_dead(ph) || ph->status)
+			return (NULL);
 	}
 }
 
-
-
-t_philo	*parse_philo(int ac, char **av, int philno)
+t_philo	*parse_philo(int ac, char **av, sem_t *death, sem_t *deathcheck)
 {
 	t_philo *ph;
 	int		i;
 	long int	time0;
+	int	philno;
 
+	philno = ft_atoi(av[1]);
 	ph = malloc(sizeof(t_philo));
 	i = -1;
 	time0 = gettime();
@@ -175,9 +187,10 @@ t_philo	*parse_philo(int ac, char **av, int philno)
 	{
 		ph->id = i + 1;
 		ph->t0 = time0;
+		ph->death = death;
+		ph->deathcheck = deathcheck;
 		ph->philno = philno;
 		ph->last_meal_start = time0;
-		ph->num_of_philos = ft_atoi(av[1]);
 		ph->time_to_die = ft_atoi(av[2]);
 		ph->time_to_eat = ft_atoi(av[3]);
 		ph->time_to_sleep = ft_atoi(av[4]);
@@ -189,4 +202,20 @@ t_philo	*parse_philo(int ac, char **av, int philno)
 			ph->max_meals = 0;
 	}
 	return (ph);
+}
+
+bool	any_dead(t_philo *p)
+{
+	int	is_one_dead;
+
+	sem_wait(p->deathcheck);
+	is_one_dead = sem_post(p->death);
+	if (is_one_dead == -1)
+	{
+		sem_post(p->deathcheck);
+		return (true);
+	}
+	sem_wait(p->death);
+	sem_post(p->deathcheck);
+	return (false);
 }
