@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 11:53:00 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/08 08:49:05 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/15 09:34:39 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,13 +32,20 @@ int	main(int ac, char **av)
 		usleep(9000);
 		if (any_dead(philos) || all_are_fed(philos))
 		{
-			printf("One philo dead or all fed.\n");
+			if (all_are_fed(philos))
+				printf("All are fed after %d meals\n", philos->max_meals);
+			else
+				printf("One philo dead. Ending simulation.\n");
 			cleanup(&philos);
 			return (1);
 		}
 	}
 }
 
+/**
+ * Check if all philo are fed, meaning, have reached max_meals number of meals.
+ * Return 1 if so, else 0.
+ */
 int	all_are_fed(t_philo *ph)
 {
 	int	i;
@@ -50,6 +57,11 @@ int	all_are_fed(t_philo *ph)
 	return (1);
 }
 
+/**
+ * Check if any philo did not eat ttd since last_meal_start. If one of them
+ * dies, set all philos stati to dead, hence making them cleanly finish their
+ * threads. 
+ */
 int	any_dead(t_philo *ph)
 {
 	int			i;
@@ -63,25 +75,27 @@ int	any_dead(t_philo *ph)
 		if (time - ph[i].last_meal_start > ph[0].time_to_die && \
 				ph[i].status == 0)
 			philo_died = printf("%ld %d died\n", time - ph[i].t0, ph[i].id);
-	i = -1;
 	if (philo_died)
+	{
+		i = -1;
 		while (++i < ph[0].num_of_philos)
 			ph[i].status = 2;
-	if (philo_died)
 		return (1);
+	}
 	return (0);
 }
 
-// from the man ->
-// 
-// pthread_mutex_destroy: destroys a mutex object, freeing the resources it
-// might hold.  The mutex must be unlocked on entrance. ** In the Linux‐ Threads
-// implementation,  no  resources are associated with mutex objects, thus
-// pthread_mutex_destroy actually does nothing except checking that the mutex is
-// unlocked. **
-//
-// -> so, mutex_destroy does nothing execept checking if mutex is unlocked on
-// linux!
+/**
+ * Cleanup all data structures.
+ *
+ * From the man ->
+ * 
+ * pthread_mutex_destroy: destroys a mutex object, freeing the resources it
+ * might hold.  The mutex must be unlocked on entrance. ** In the Linux‐ Threads
+ * implementation,  no  resources are associated with mutex objects, thus
+ * pthread_mutex_destroy actually does nothing except checking that the mutex is
+ * unlocked. **
+ */
 void	cleanup(t_philo **ph)
 {
 	int	i;
@@ -95,10 +109,9 @@ void	cleanup(t_philo **ph)
 	i = -1;
 	while (++i < num_of_philos)
 	{
-		// FIXME: remove msg printing before submission
 		err = pthread_mutex_destroy(&ph[0]->forks[i]);
 		if (err != 0)
-			printf("mutex destroy failed for mutex %d, err = %d\n", i, err);
+			printf("Mutex destroy failed for mutex %d, err = %d\n", i, err);
 	}
 	free(ph[0]->phil_threads);
 	free(ph[0]->forks);
