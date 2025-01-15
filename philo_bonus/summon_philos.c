@@ -6,13 +6,13 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/15 10:26:22 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/15 12:25:30 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/15 13:38:32 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-static void	start_watchdog_thread(pthread_t *kthread, t_philo *pp);
+static void	start_death_thread(pthread_t *kthread, t_philo *pp);
 static void	cleanup(pthread_t *kthread, sem_t *forks, t_philo *pp);
 static void	*killer_thread(void *arg);
 static void	philo_subroutine(t_philo *pp, sem_t *forks);
@@ -38,27 +38,28 @@ static void	philo_subroutine(t_philo *pp, sem_t *forks)
 {
 	pthread_t	killerthread;
 
-	start_watchdog_thread(&killerthread, pp);
+	start_death_thread(&killerthread, pp);
 	while (1)
 	{
 		eat(pp, forks);
-		if (!any_dead(pp) && !pp->status)
+		if (pp->philno != 1 && !any_dead(pp) && !pp->status)
 		{
 			printf("%ld %d is sleeping\n", gettime() - pp->t0, pp->id);
 			usleep (pp->time_to_sleep * 1000);
 		}
-		if (!any_dead(pp) && !pp->status)
+		if (pp->philno != 1 && !any_dead(pp) && !pp->status)
 		{
 			printf("%ld %d is thinking\n", gettime() - pp->t0, pp->id);
 			if (pp->philno % 2)
 				usleep((pp->time_to_eat * 2 - pp->time_to_sleep) * 1000);
 		}
+		printf("<< DEBUG >> came here\n");
 		if (any_dead(pp) || pp->status)
 			cleanup(&killerthread, forks, pp);
 	}
 }
 
-static void	start_watchdog_thread(pthread_t *kthread, t_philo *pp)
+static void	start_death_thread(pthread_t *kthread, t_philo *pp)
 {
 	if (pthread_create(kthread, NULL, killer_thread, (void *)pp) != 0)
 	{
@@ -77,6 +78,8 @@ static void	*killer_thread(void *arg)
 	{
 		usleep(9000);
 		time = gettime() - ph->t0;
+		printf("watching\n");
+		printf("time: %ld, ph->last_meal_start: %ld\n", time, ph->last_meal_start);
 		if (time - ph->last_meal_start >= ph->time_to_die)
 		{
 			printf("%ld %d died\n", time, ph->id);
