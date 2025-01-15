@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 09:03:17 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/15 10:51:55 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/15 12:11:00 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ long int	gettime(void)
 	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
 }
 
-bool	check_invalid_params(char **av, int ac)
+t_bool	check_invalid_params(char **av, int ac)
 {
 	int	phils;
 
