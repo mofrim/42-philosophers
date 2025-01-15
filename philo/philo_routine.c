@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 20:42:36 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/08 09:54:03 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/15 08:59:06 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 static void	ph_initial_sleep(t_philo *ph);
 static void	ph_eat(t_philo *ph);
 static void	ph_sleep(t_philo *ph);
+static void	ph_think(t_philo *ph);
 
 /* The main philosopher thread routine. */
 void	*philo(void *phv)
@@ -34,8 +35,7 @@ void	*philo(void *phv)
 		}
 		ph_eat(ph);
 		ph_sleep(ph);
-		if (!ph->status)
-			printf("%ld %d is thinking\n", gettime() - ph->t0, ph->id);
+		ph_think(ph);
 	}
 }
 
@@ -43,13 +43,8 @@ void	*philo(void *phv)
  * of eating time to avoid deadlock from the start. */
 void	ph_initial_sleep(t_philo *ph)
 {
-	if (!ph->num_of_meals)
-	{
-		if (!(ph->num_of_philos % 2) && !(ph->id % 2))
-			usleep((ph->time_to_eat / 2) * 1000);
-		if ((ph->num_of_philos % 2) && (ph->id % 2))
-			usleep((ph->time_to_eat / 2) * 1000);
-	}
+	if (!ph->num_of_meals && (ph->id % 2))
+		usleep((ph->time_to_eat / 2) * 1000);
 }
 
 /**
@@ -97,5 +92,16 @@ void	ph_sleep(t_philo *ph)
 	{
 		printf("%ld %d is sleeping\n", gettime() - ph->t0, ph->id);
 		usleep(ph->time_to_sleep * 1000);
+	}
+}
+
+/* Thinking function. */
+void	ph_think(t_philo *ph)
+{
+	if (!ph->status)
+	{
+		printf("%ld %d is thinking\n", gettime() - ph->t0, ph->id);
+		if (ph->num_of_philos % 2)
+			usleep((ph->time_to_eat * 2 - ph->time_to_sleep) * 1000);
 	}
 }
