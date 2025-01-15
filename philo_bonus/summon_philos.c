@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/15 10:26:22 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/15 12:20:59 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/15 12:25:30 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ void	summon_philos(int philno, t_philo *pp, sem_t *forks)
 	i = -1;
 	while (++i < philno)
 	{
+		pp->id = i + 1;
 		ppid = fork();
 		if (ppid < 0)
 			return ;

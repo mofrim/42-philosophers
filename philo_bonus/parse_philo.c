@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/15 11:01:54 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/15 12:18:20 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/15 12:25:00 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,12 +39,9 @@ t_philo	*parse_philo(int ac, char **av, sem_t *death, sem_t *deathcheck)
 	ph = malloc(sizeof(t_philo));
 	i = -1;
 	time0 = gettime();
-	while (++i < philno)
-	{
-		ph->id = i + 1;
-		ph->death = death;
-		ph->deathcheck = deathcheck;
-		init_common_params(ph, ac, av, time0);
-	}
+	ph->id = 1;
+	ph->death = death;
+	ph->deathcheck = deathcheck;
+	init_common_params(ph, ac, av, time0);
 	return (ph);
 }
