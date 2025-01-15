@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 20:44:24 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/08 08:48:14 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/15 10:11:08 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,10 +72,10 @@ int	alloc_data_structures(t_philo **philos, pthread_mutex_t **forks, \
 		return (0);
 	*forks = malloc(sizeof(pthread_mutex_t) * phils);
 	if (!forks)
-		return(free(philos), 0);
+		return (free(philos), 0);
 	*threads = malloc(sizeof(pthread_t) * phils);
 	if (!threads)
-		return(free(philos), free(forks), 0);
+		return (free(philos), free(forks), 0);
 	memset(*threads, 0, phils * sizeof(pthread_t));
 	memset(*forks, 0, phils * sizeof(pthread_mutex_t));
 	return (1);
