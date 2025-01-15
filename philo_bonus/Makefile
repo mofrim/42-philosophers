@@ -6,7 +6,7 @@
 #    By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/01 11:45:58 by fmaurer           #+#    #+#              #
-#    Updated: 2025/01/08 14:02:26 by fmaurer          ###   ########.fr        #
+#    Updated: 2025/01/15 10:15:30 by fmaurer          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,8 +16,7 @@ SRC_IN	= ./philo_bonus.c \
 SRC			= $(patsubst ./%.c,%.c,$(SRC_IN))
 OBJDIR	= obj
 OBJS		= $(patsubst %.c,$(OBJDIR)/%.o,$(SRC))
-# CFLAGS	= -Wall -Werror -Wextra -pthread
-CFLAGS	= -g
+CFLAGS	= -Wall -Werror -Wextra
 HDR			= philo_bonus.h
 
 all: $(NAME)
