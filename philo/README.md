@@ -220,3 +220,21 @@ gcc -o producer_consumer producer_consumer.c -lpthread -lrt
   `"/empty"` and `"/full"`). The leading `/` is required for named semaphores.
 - **Error Handling**: In a production scenario, you should add more robust error
   handling for thread creation and semaphore
+
+# the math
+
+Why is `./philo 3 410 200 200` deadly?
+
+- only one philo can eat in the very beginning.
+- philo1 eats for 200ms than sleeps for 200ms = 400ms of time since last meal
+- after 200ms 
+0 philo1 takes fork
+0 philo1 takes another fork
+0 philo1 starts eating
+0 
+
+
+
+
+
+
