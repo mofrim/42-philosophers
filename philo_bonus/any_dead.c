@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/15 11:10:30 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/15 11:20:26 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/15 12:36:09 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,9 @@ t_bool	any_dead(t_philo *p)
 	if (is_one_dead == -1)
 	{
 		sem_post(p->deathcheck);
-		return (true);
+		return (TRUE);
 	}
 	sem_wait(p->death);
 	sem_post(p->deathcheck);
-	return (false);
+	return (FALSE);
 }
