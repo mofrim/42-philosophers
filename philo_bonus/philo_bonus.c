@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 11:53:00 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/16 11:24:12 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/16 12:07:16 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,10 @@ int	main(int ac, char **av)
 	summon_philos(proto_philo);
 	while (waitpid(-1, NULL, 0) != -1)
 		;
+	if (all_fed(proto_philo))
+		printf("All are fed!\n");
+	else
+		printf("A philo died!\n");
 	cleanup(semas, proto_philo);
 	return (0);
 }
