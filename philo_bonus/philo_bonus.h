@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 12:35:39 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/15 12:34:07 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/16 11:29:56 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,15 @@ typedef int	t_bool;
 # define FALSE 0
 # define TRUE 1
 
+typedef struct s_semas
+{
+	sem_t	*death;
+	sem_t	*deathcheck;
+	sem_t	*forks;
+	sem_t	*fed;
+	sem_t	*fedcheck;
+}	t_semas;
+
 /*
  * status:
  * 	- 0: normal / alive
@@ -71,6 +80,10 @@ typedef struct s_philo
 	int			id;
 	sem_t		*death;
 	sem_t		*deathcheck;
+	sem_t		*fed;
+	sem_t		*fedcheck;
+	sem_t		*forks;
+	t_semas		*semas;
 }	t_philo;
 
 int			ft_atoi(char *s);
@@ -78,9 +91,11 @@ long int	gettime(void);
 void		print_philo_data(t_philo p);
 void		*philo(void	*phv);
 t_bool		check_invalid_params(char **av, int ac);
-t_philo		*parse_philo(int ac, char **av, sem_t *death, sem_t *deathcheck);
-void		summon_philos(int philno, t_philo *pp, sem_t *forks);
-void		eat(t_philo *pp, sem_t *forks);
+t_philo		*make_proto_philo(int ac, char **av, t_semas *semas);
+void		summon_philos(t_philo *pp);
+void		eat(t_philo *pp);
 t_bool		any_dead(t_philo *p);
+void		init_semas(t_semas *semas, int philno);
+t_bool		all_fed(t_philo *p);
 
 #endif

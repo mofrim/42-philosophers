@@ -6,41 +6,32 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 11:53:00 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/15 12:00:51 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/16 11:24:12 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
 static void	initial_unlink_semas(void);
-static void	cleanup(sem_t *forks, sem_t *death, sem_t *deathcheck, t_philo *pp);
+static void	cleanup(t_semas *semas, t_philo *pp);
+void		main_death_watchdog(int *cpids, t_philo *ph);
 
 int	main(int ac, char **av)
 {
-	sem_t	*forks;
-	sem_t	*death;
-	sem_t	*deathcheck;
-	int		philno;
+	t_semas	*semas;
 	t_philo	*proto_philo;
 
+	semas = malloc(sizeof(t_semas));
 	initial_unlink_semas();
 	if (!((5 <= ac && ac <= 6) && !check_invalid_params(av, ac)))
 		return (printf("usage: ./philo num_of_philos ttd tte tts" \
 					" (numoftimes_to_eat)"), 22);
-	philno = ft_atoi(av[1]);
-	forks = sem_open("/forks", O_CREAT, 0644, philno);
-	death = sem_open("/death", O_CREAT, 0644, SEM_VALUE_MAX - 1);
-	deathcheck = sem_open("/deathcheck", O_CREAT, 0644, 1);
-	if (forks == SEM_FAILED || death == SEM_FAILED || deathcheck == SEM_FAILED)
-	{
-		printf("Opening sem failed, errno: %d\n", errno);
-		exit(errno);
-	}
-	proto_philo = parse_philo(ac, av, death, deathcheck);
-	summon_philos(philno, proto_philo, forks);
+	init_semas(semas, ft_atoi(av[1]));
+	proto_philo = make_proto_philo(ac, av, semas);
+	summon_philos(proto_philo);
 	while (waitpid(-1, NULL, 0) != -1)
 		;
-	cleanup(forks, death, deathcheck, proto_philo);
+	cleanup(semas, proto_philo);
 	return (0);
 }
 
@@ -58,16 +49,23 @@ static void	initial_unlink_semas(void)
 	sem_unlink("/forks");
 	sem_unlink("/death");
 	sem_unlink("/deathcheck");
+	sem_unlink("/fed");
+	sem_unlink("/fedcheck");
 }
 
 /* Well, cleanup. */
-static void	cleanup(sem_t *forks, sem_t *death, sem_t *deathcheck, t_philo *pp)
+static void	cleanup(t_semas *semas, t_philo *pp)
 {
-	sem_close(forks);
-	sem_close(death);
-	sem_close(deathcheck);
+	sem_close(semas->forks);
+	sem_close(semas->death);
+	sem_close(semas->deathcheck);
+	sem_close(semas->fed);
+	sem_close(semas->fedcheck);
 	sem_unlink("/forks");
 	sem_unlink("/death");
 	sem_unlink("/deathcheck");
+	sem_unlink("/fed");
+	sem_unlink("/fedcheck");
+	free(semas);
 	free(pp);
 }

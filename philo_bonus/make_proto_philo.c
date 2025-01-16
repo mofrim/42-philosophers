@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse_philo.c                                      :+:      :+:    :+:   */
+/*   make_proto_philo.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/15 11:01:54 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/15 13:39:30 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/15 19:13:42 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static void	init_common_params(t_philo *ph, int ac, char **av, long int time0)
 		ph->max_meals = 0;
 }
 
-t_philo	*parse_philo(int ac, char **av, sem_t *death, sem_t *deathcheck)
+t_philo	*make_proto_philo(int ac, char **av, t_semas *semas)
 {
 	t_philo		*ph;
 	long int	time0;
@@ -36,8 +36,12 @@ t_philo	*parse_philo(int ac, char **av, sem_t *death, sem_t *deathcheck)
 	ph = malloc(sizeof(t_philo));
 	time0 = gettime();
 	ph->id = 1;
-	ph->death = death;
-	ph->deathcheck = deathcheck;
+	ph->death = semas->death;
+	ph->deathcheck = semas->deathcheck;
+	ph->fed = semas->fed;
+	ph->fedcheck = semas->fedcheck;
+	ph->forks = semas->forks;
+	ph->semas = semas;
 	init_common_params(ph, ac, av, time0);
 	return (ph);
 }

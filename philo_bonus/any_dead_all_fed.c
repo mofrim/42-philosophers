@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/15 11:10:30 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/15 12:36:09 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/15 17:46:25 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,5 +35,26 @@ t_bool	any_dead(t_philo *p)
 	}
 	sem_wait(p->death);
 	sem_post(p->deathcheck);
+	return (FALSE);
+}
+
+/**
+ * Check if all philos are fed.
+ *
+ * Same logic like any_dead.
+ */
+t_bool	all_fed(t_philo *p)
+{
+	int	fed_up;
+
+	sem_wait(p->fedcheck);
+	fed_up = sem_post(p->fed);
+	if (fed_up == -1)
+	{
+		sem_post(p->fedcheck);
+		return (TRUE);
+	}
+	sem_wait(p->fed);
+	sem_post(p->fedcheck);
 	return (FALSE);
 }

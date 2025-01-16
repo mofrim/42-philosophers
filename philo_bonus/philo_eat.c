@@ -6,32 +6,37 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/15 10:43:22 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/15 13:25:12 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/16 11:28:08 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-static void	wait_for_fork(t_philo *pp, sem_t *forks, int *gotfork)
+static void	wait_for_fork(t_philo *pp, int *gotfork)
 {
-	printf("and here\n");
-	sem_wait(forks);
-	printf("but not here\n");
+	sem_wait(pp->forks);
 	(*gotfork)++;
-	if (!pp->status)
+	if (!any_dead(pp))
 		printf("%ld %d has taken a fork\n", gettime() - pp->t0, pp->id);
 }
 
-void	eat(t_philo *pp, sem_t *forks)
+static void	increment_fed_sema(t_philo pp)
+{
+	sem_wait(pp.fedcheck);
+	sem_post(pp.fed);
+	sem_post(pp.fedcheck);
+}
+
+void	eat(t_philo *pp)
 {
 	int			gotfork;
 	long int	meal_start;
 
 	gotfork = 0;
 	if (!any_dead(pp))
-		wait_for_fork(pp, forks, &gotfork);
+		wait_for_fork(pp, &gotfork);
 	if (pp->philno != 1 && !any_dead(pp))
-		wait_for_fork(pp, forks, &gotfork);
+		wait_for_fork(pp, &gotfork);
 	if (pp->philno != 1 && !any_dead(pp) && gotfork == 2)
 	{
 		meal_start = gettime() - pp->t0;
@@ -40,10 +45,13 @@ void	eat(t_philo *pp, sem_t *forks)
 		usleep (pp->time_to_eat * 1000);
 		pp->num_of_meals++;
 		if (pp->max_meals && pp->num_of_meals == pp->max_meals)
+		{
+			increment_fed_sema(*pp);
 			pp->status = 1;
+		}
 	}
 	if (pp->philno != 1 && gotfork)
-		sem_post(forks);
+		sem_post(pp->forks);
 	if (gotfork == 2)
-		sem_post(forks);
+		sem_post(pp->forks);
 }
