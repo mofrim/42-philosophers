@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 11:53:00 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/16 12:07:16 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/17 22:48:09 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	main(int ac, char **av)
 					" (numoftimes_to_eat)"), 22);
 	init_semas(semas, ft_atoi(av[1]));
 	proto_philo = make_proto_philo(ac, av, semas);
-	summon_philos(proto_philo);
+	philo_dinner(proto_philo);
 	while (waitpid(-1, NULL, 0) != -1)
 		;
 	if (all_fed(proto_philo))

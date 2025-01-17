@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   any_dead.c                                         :+:      :+:    :+:   */
+/*   any_dead_all_fed.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/15 11:10:30 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/15 17:46:25 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/17 22:45:48 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,13 @@ t_bool	any_dead(t_philo *p)
 /**
  * Check if all philos are fed.
  *
- * Same logic like any_dead.
+ * Same logic like any_dead but subtely different... the fed semaphore is
+ * initialized to SEM_VALUE_MAX - philno. Every time a philo is fed up, it calls
+ * sem_post on this sema. So if all are finally fed, any further sem_post to
+ * this sema will return -1, which would be an indicator for fedness.
+ *
+ * Kept this of historic reason. In the current implementation this is not
+ * necessary anymore.
  */
 t_bool	all_fed(t_philo *p)
 {

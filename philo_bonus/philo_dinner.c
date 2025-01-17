@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   summon_philos.c                                    :+:      :+:    :+:   */
+/*   philo_dinner.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/15 10:26:22 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/17 07:49:43 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/17 22:53:08 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@ static void	cleanup_and_exit(pthread_t *kthread, t_philo *pp);
 static void	*death_thread(void *arg);
 static void	philo_subroutine(t_philo *pp);
 
-void	summon_philos(t_philo *pp)
+/* Launch a subprocess for every philo. */
+void	philo_dinner(t_philo *pp)
 {
 	int		i;
 	pid_t	cpid;
@@ -34,6 +35,7 @@ void	summon_philos(t_philo *pp)
 	}
 }
 
+/* The per philo subroutine running in the child process. */
 static void	philo_subroutine(t_philo *pp)
 {
 	pthread_t	killerthread;
@@ -43,7 +45,7 @@ static void	philo_subroutine(t_philo *pp)
 	{
 		if (!pp->num_of_meals && !(pp->philno % 2) && pp->id % 2)
 			usleep((pp->time_to_eat / 2) * 1000);
-		eat(pp);
+		philo_eat(pp);
 		if (pp->philno != 1 && !any_dead(pp) && !pp->status)
 		{
 			printf("%ld %d is sleeping\n", gettime() - pp->t0, pp->id);
@@ -60,6 +62,7 @@ static void	philo_subroutine(t_philo *pp)
 	}
 }
 
+/* Wrapper for death thread. */
 static void	start_death_thread(pthread_t *kthread, t_philo *pp)
 {
 	if (pthread_create(kthread, NULL, death_thread, (void *)pp) != 0)
