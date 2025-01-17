@@ -15,7 +15,7 @@ shell.nix
 !philo/philo_routine.c
 !philo/utils.c
 
-philo_bonus
+philo_bonus/philo_bonus
 # !philo_bonus/
 # !philo_bonus/Makefile
 # !philo_bonus/README.md

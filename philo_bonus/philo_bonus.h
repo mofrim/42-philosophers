@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 12:35:39 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/16 11:29:56 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/17 22:50:48 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,8 +92,8 @@ void		print_philo_data(t_philo p);
 void		*philo(void	*phv);
 t_bool		check_invalid_params(char **av, int ac);
 t_philo		*make_proto_philo(int ac, char **av, t_semas *semas);
-void		summon_philos(t_philo *pp);
-void		eat(t_philo *pp);
+void		philo_dinner(t_philo *pp);
+void		philo_eat(t_philo *pp);
 t_bool		any_dead(t_philo *p);
 void		init_semas(t_semas *semas, int philno);
 t_bool		all_fed(t_philo *p);

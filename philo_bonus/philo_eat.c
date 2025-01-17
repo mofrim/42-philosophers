@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/15 10:43:22 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/16 11:28:08 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/17 22:50:48 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static void	increment_fed_sema(t_philo pp)
 	sem_post(pp.fedcheck);
 }
 
-void	eat(t_philo *pp)
+void	philo_eat(t_philo *pp)
 {
 	int			gotfork;
 	long int	meal_start;
