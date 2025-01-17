@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/15 10:26:22 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/16 11:41:08 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/17 07:49:43 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ static void	philo_subroutine(t_philo *pp)
 	while (1)
 	{
 		if (!pp->num_of_meals && !(pp->philno % 2) && pp->id % 2)
-			usleep(100);
+			usleep((pp->time_to_eat / 2) * 1000);
 		eat(pp);
 		if (pp->philno != 1 && !any_dead(pp) && !pp->status)
 		{
