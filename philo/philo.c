@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 11:53:00 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/15 09:34:39 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/23 09:48:05 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,20 +99,17 @@ int	any_dead(t_philo *ph)
 void	cleanup(t_philo **ph)
 {
 	int	i;
-	int	err;
 	int	num_of_philos;
 
 	num_of_philos = ph[0]->num_of_philos;
 	i = -1;
 	while (++i < num_of_philos)
-		pthread_join(ph[0]->phil_threads[i], NULL);
-	i = -1;
-	while (++i < num_of_philos)
 	{
-		err = pthread_mutex_destroy(&ph[0]->forks[i]);
-		if (err != 0)
-			printf("Mutex destroy failed for mutex %d, err = %d\n", i, err);
+		pthread_mutex_unlock(&ph[0]->forks[i]);
+		pthread_join(ph[0]->phil_threads[i], NULL);
+		pthread_mutex_destroy(&ph[0]->forks[i]);
 	}
+	i = -1;
 	free(ph[0]->phil_threads);
 	free(ph[0]->forks);
 	free(*ph);
