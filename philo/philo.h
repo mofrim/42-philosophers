@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 12:35:39 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/23 14:25:25 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/23 17:05:51 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ typedef struct s_philo
 {
 	long int		t0;
 	long int		last_meal_start;
-	int				num_of_philos;
+	int				philno;
 	int				time_to_die;
 	int				time_to_eat;
 	int				time_to_sleep;
@@ -50,10 +50,20 @@ typedef struct s_philo
 	pthread_mutex_t	*forks;
 }	t_philo;
 
+typedef struct s_params
+{
+	long	ttd;
+	long	tte;
+	long	tts;
+	int		maxmeals;
+	int		philno;
+}	t_params;
+
 int			ft_atoi(char *s);
 long int	gettime(void);
 void		print_philo_data(t_philo p);
 void		*philo(void	*phv);
-t_philo		*init_philos(char **av, int ac, int philno);
+t_philo		*init_philos(t_params params);
 void		*nullmsg(char *msg);
+t_params	*parse_params(int ac, char **av);
 #endif

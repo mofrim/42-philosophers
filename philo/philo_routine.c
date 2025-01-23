@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 20:42:36 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/15 08:59:06 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/23 17:09:32 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,9 +68,9 @@ void	ph_eat(t_philo *ph)
 		if (!ph->status)
 			printf("%ld %d has taken a fork\n", gettime() - ph->t0, ph->id);
 	}
-	if (ph->num_of_philos != 1 && !ph->status)
+	if (ph->philno != 1 && !ph->status)
 	{
-		pthread_mutex_lock(&ph->forks[(ph->id) % ph->num_of_philos]);
+		pthread_mutex_lock(&ph->forks[(ph->id) % ph->philno]);
 		if (!ph->status)
 		{
 			printf("%ld %d has taken a fork\n", gettime() - ph->t0, ph->id);
@@ -79,7 +79,7 @@ void	ph_eat(t_philo *ph)
 			usleep(ph->time_to_eat * 1000);
 			ph->num_of_meals++;
 		}
-		pthread_mutex_unlock(&ph->forks[(ph->id) % ph->num_of_philos]);
+		pthread_mutex_unlock(&ph->forks[(ph->id) % ph->philno]);
 	}
 	if (locked)
 		pthread_mutex_unlock(&ph->forks[ph->id - 1]);
@@ -101,7 +101,7 @@ void	ph_think(t_philo *ph)
 	if (!ph->status)
 	{
 		printf("%ld %d is thinking\n", gettime() - ph->t0, ph->id);
-		if (ph->num_of_philos % 2)
+		if (ph->philno % 2)
 			usleep((ph->time_to_eat * 2 - ph->time_to_sleep) * 1000);
 	}
 }
