@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 11:53:00 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/23 13:46:35 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/23 14:44:20 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,9 @@ int	main(int ac, char **av)
 	if (5 <= ac && ac <= 6)
 		philos = init_philos(av, ac, ft_atoi(av[1]));
 	else
-		return (printf("usage: ./philo num_of_philos ttd tte tts" \
-					" (numoftimes_to_eat)"), 22);
+		return (printf(HELPTEXT), 1);
 	if (!philos)
-		return (printf("Init error!"), 1);
+		return (printf("Init error!"), 22);
 	while (1)
 	{
 		usleep(9000);
