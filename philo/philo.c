@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 11:53:00 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/23 14:44:20 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/23 20:01:32 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,14 @@ int		all_are_fed(t_philo *ph);
 
 int	main(int ac, char **av)
 {
-	t_philo	*philos;
+	t_philo		*philos;
+	t_params	*params;
 
 	if (5 <= ac && ac <= 6)
-		philos = init_philos(av, ac, ft_atoi(av[1]));
+	{
+		params = parse_params(ac, av);
+		philos = init_philos(*params);
+	}
 	else
 		return (printf(HELPTEXT), 1);
 	if (!philos)
@@ -50,7 +54,7 @@ int	all_are_fed(t_philo *ph)
 	int	i;
 
 	i = -1;
-	while (++i < ph[0].num_of_philos)
+	while (++i < ph[0].philno)
 		if (ph[i].status != 1)
 			return (0);
 	return (1);
@@ -70,14 +74,14 @@ int	any_dead(t_philo *ph)
 	i = -1;
 	time = gettime();
 	philo_died = 0;
-	while (++i < ph[0].num_of_philos)
+	while (++i < ph[0].philno)
 		if (time - ph[i].last_meal_start > ph[0].time_to_die && \
 				ph[i].status == 0)
 			philo_died = printf("%ld %d died\n", time - ph[i].t0, ph[i].id);
 	if (philo_died)
 	{
 		i = -1;
-		while (++i < ph[0].num_of_philos)
+		while (++i < ph[0].philno)
 			ph[i].status = 2;
 		return (1);
 	}
@@ -100,7 +104,7 @@ void	cleanup(t_philo **ph)
 	int	i;
 	int	num_of_philos;
 
-	num_of_philos = ph[0]->num_of_philos;
+	num_of_philos = ph[0]->philno;
 	i = -1;
 	while (++i < num_of_philos)
 	{

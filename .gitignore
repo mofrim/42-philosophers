@@ -1,9 +1,13 @@
+<<<<<<< HEAD
 philo/*
+=======
+>>>>>>> fa3c537 (fix?!: nice up init_philo funcs++)
 .cache
 .direnv/
 .gitignore
 .envrc
 obj/
+<<<<<<< HEAD
 compile_commands.json
 shell.nix
 !philo/
@@ -28,3 +32,12 @@ philo_bonus/philo_bonus
 # !philo_bonus/any_dead.c
 # !philo_bonus/make_proto_philo.c
 #
+=======
+core
+log*
+compile_commands.json
+shell.nix
+philo/philo
+philo_bonus/philo_bonus
+playground/
+>>>>>>> fa3c537 (fix?!: nice up init_philo funcs++)
