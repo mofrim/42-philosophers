@@ -31,6 +31,9 @@
 /* memset */
 # include <string.h>
 
+# define HELPTEXT "usage: ./philo num_of_philos ttd tte tts \
+	(numoftimes_to_eat)\nAll values > 0!!!  >:("
+
 typedef struct s_philo
 {
 	long int		t0;
