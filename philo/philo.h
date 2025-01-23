@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 12:35:39 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/08 08:37:23 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/23 14:25:25 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,6 @@ int			ft_atoi(char *s);
 long int	gettime(void);
 void		print_philo_data(t_philo p);
 void		*philo(void	*phv);
-t_philo		*init_philos(char **av, int argnum);
+t_philo		*init_philos(char **av, int ac, int philno);
 void		*nullmsg(char *msg);
 #endif

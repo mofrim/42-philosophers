@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 09:03:17 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/08 08:37:05 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/23 14:24:01 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ int	ft_atoi(char *s)
 }
 
 /* Get current time in milliseconds since epoch. */
-long int	gettime(void)
+long	gettime(void)
 {
 	struct timeval	tv;
 
