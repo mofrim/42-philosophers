@@ -15,20 +15,25 @@ int main(int ac, char **av)
 	f = fopen(av[1], "r");
 	if (!f)
 		exit(1);
-	char line[256];
-	while(fgets(line, 255, f) != NULL)
+	char line1[256];
+	char line2[256];
+	while(fgets(line1, 255, f) != NULL)
 	{
-		w = strchr(line, ' ');
+		w = strchr(line1, ' ');
 		if (w)
-			strncpy(num1, line, w - line);
-		if (fgets(line, 255, f) != NULL)
+			strncpy(num1, line1, w - line1);
+		if (fgets(line2, 255, f) != NULL)
 		{
-			w = strchr(line, ' ');
+			w = strchr(line2, ' ');
 			if (w)
-				strncpy(num2, line, w - line);
+				strncpy(num2, line2, w - line2);
 		}
 		if (atoi(num1) > atoi(num2))
+		{
 			printf("num1 = %s > num2 = %s\n", num1, num2);
+			printf("line1 = %s", line1);
+			printf("line2 = %s\n", line2);
+		}
 	}
 	return (0);
 }
