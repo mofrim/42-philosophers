@@ -9,4 +9,3 @@ compile_commands.json
 shell.nix
 philo/philo
 philo_bonus/philo_bonus
-playground/
