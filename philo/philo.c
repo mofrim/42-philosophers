@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 11:53:00 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/23 20:01:32 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/24 12:07:57 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,15 +74,15 @@ int	any_dead(t_philo *ph)
 	i = -1;
 	time = gettime();
 	philo_died = 0;
-	while (++i < ph[0].philno)
-		if (time - ph[i].last_meal_start > ph[0].time_to_die && \
-				ph[i].status == 0)
-			philo_died = printf("%ld %d died\n", time - ph[i].t0, ph[i].id);
+	while (++i < ph->philno)
+		if (time - ph->last_meal_start > ph[0].time_to_die && \
+				ph->status == 0)
+			philo_died = printf("%ld %d died\n", time - ph->t0, *ph->id);
 	if (philo_died)
 	{
 		i = -1;
 		while (++i < ph[0].philno)
-			ph[i].status = 2;
+			ph->status = 2;
 		return (1);
 	}
 	return (0);
@@ -104,16 +104,16 @@ void	cleanup(t_philo **ph)
 	int	i;
 	int	num_of_philos;
 
-	num_of_philos = ph[0]->philno;
+	num_of_philos = (*ph)->philno;
 	i = -1;
 	while (++i < num_of_philos)
 	{
-		pthread_mutex_unlock(&ph[0]->forks[i]);
-		pthread_join(ph[0]->phil_threads[i], NULL);
-		pthread_mutex_destroy(&ph[0]->forks[i]);
+		pthread_mutex_unlock(&((*ph)->forks)[i]);
+		pthread_join((*ph)->phil_threads[i], NULL);
+		pthread_mutex_destroy(&((*ph)->forks)[i]);
 	}
 	i = -1;
-	free(ph[0]->phil_threads);
-	free(ph[0]->forks);
+	free((*ph)->phil_threads);
+	free((*ph)->forks);
 	free(*ph);
 }

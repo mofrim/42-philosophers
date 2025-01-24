@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 12:35:39 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/23 17:05:51 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/24 12:04:52 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ typedef struct s_philo
 	int				num_of_meals;
 	int				max_meals;
 	int				status;
-	int				id;
+	int				*id;
 	pthread_t		*phil_threads;
 	pthread_mutex_t	*forks;
 }	t_philo;
