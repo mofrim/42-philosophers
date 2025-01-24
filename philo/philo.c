@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 11:53:00 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/23 20:01:32 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/24 11:01:05 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,12 +72,12 @@ int	any_dead(t_philo *ph)
 	int			philo_died;
 
 	i = -1;
-	time = gettime();
+	time = get_the_clock_time(ph->clock);
 	philo_died = 0;
 	while (++i < ph[0].philno)
 		if (time - ph[i].last_meal_start > ph[0].time_to_die && \
 				ph[i].status == 0)
-			philo_died = printf("%ld %d died\n", time - ph[i].t0, ph[i].id);
+			philo_died = printf("%ld %d died\n", time, ph[i].id);
 	if (philo_died)
 	{
 		i = -1;

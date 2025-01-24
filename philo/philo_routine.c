@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 20:42:36 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/23 17:09:32 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/24 11:03:09 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,16 +66,16 @@ void	ph_eat(t_philo *ph)
 	{
 		locked = !(pthread_mutex_lock(&ph->forks[ph->id - 1]));
 		if (!ph->status)
-			printf("%ld %d has taken a fork\n", gettime() - ph->t0, ph->id);
+			printf("%ld %d has taken a fork\n", get_the_clock_time(ph->clock), ph->id);
 	}
 	if (ph->philno != 1 && !ph->status)
 	{
 		pthread_mutex_lock(&ph->forks[(ph->id) % ph->philno]);
 		if (!ph->status)
 		{
-			printf("%ld %d has taken a fork\n", gettime() - ph->t0, ph->id);
-			ph->last_meal_start = gettime();
-			printf("%ld %d is eating\n", ph->last_meal_start - ph->t0, ph->id);
+			ph->last_meal_start = get_the_clock_time(ph->clock);
+			printf("%ld %d has taken a fork\n", ph->last_meal_start, ph->id);
+			printf("%ld %d is eating\n", ph->last_meal_start, ph->id);
 			usleep(ph->time_to_eat * 1000);
 			ph->num_of_meals++;
 		}
@@ -90,7 +90,7 @@ void	ph_sleep(t_philo *ph)
 {
 	if (!ph->status)
 	{
-		printf("%ld %d is sleeping\n", gettime() - ph->t0, ph->id);
+		printf("%ld %d is sleeping\n", get_the_clock_time(ph->clock), ph->id);
 		usleep(ph->time_to_sleep * 1000);
 	}
 }
@@ -100,7 +100,7 @@ void	ph_think(t_philo *ph)
 {
 	if (!ph->status)
 	{
-		printf("%ld %d is thinking\n", gettime() - ph->t0, ph->id);
+		printf("%ld %d is thinking\n", get_the_clock_time(ph->clock), ph->id);
 		if (ph->philno % 2)
 			usleep((ph->time_to_eat * 2 - ph->time_to_sleep) * 1000);
 	}
