@@ -6,65 +6,84 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 20:44:24 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/23 20:01:00 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/25 14:12:09 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
 static void		init_common_params(t_philo	*ph, t_params par);
-static int		alloc_data_structs(t_philo **philos, pthread_mutex_t **forks,
-					pthread_t **threads, int phils);
-static void		init_common_structs(t_philo *ph, pthread_mutex_t *forks,
-					pthread_t *threads);
-static t_philo	*prep_philos(t_params par);
+static int		alloc_data_structs(t_philo **ph, int philno);
+static t_philo	*prep_philo(t_params par);
+static int		alloc_init_mutexes(t_philo *ph, int philno);
 
 t_philo	*init_philos(t_params par)
 {
 	int		i;
 	t_philo	*phs;
 
-	phs = prep_philos(par);
+	phs = prep_philo(par);
 	i = -1;
 	while (++i < par.philno)
 	{
-		phs[i].id = i + 1;
-		if (pthread_mutex_init(&phs->forks[i], NULL) != 0)
-			return (printf("Mutex init failed"), NULL);
+		pthread_mutex_lock(phs->init_lock);
+		phs->id = i + 1;
 		if (pthread_create(&(phs->phil_threads)[i], NULL, philo,
-			(void *)&phs[i]) != 0)
+			(void *)phs) != 0)
 			return (printf("Thread creation failed"), NULL);
 	}
 	return (phs);
 }
 
-t_philo	*prep_philos(t_params par)
+t_philo	*prep_philo(t_params par)
 {
 	t_philo			*ph;
-	pthread_t		*threads;
-	pthread_mutex_t	*forks;
 
-	if (alloc_data_structs(&ph, &forks, &threads, par.philno) == -1)
+	if (alloc_data_structs(&ph, par.philno) == -1)
+		return (NULL);
+	if (alloc_init_mutexes(ph, par.philno) == -1)
 		return (NULL);
 	init_common_params(ph, par);
-	init_common_structs(ph, forks, threads);
 	return (ph);
 }
 
-int	alloc_data_structs(t_philo **philos, pthread_mutex_t **forks, \
-		pthread_t **threads, int philno)
+int	alloc_data_structs(t_philo **ph, int philno)
 {
-	*philos = malloc(sizeof(t_philo) * philno);
-	if (!philos)
+	*ph = malloc(sizeof(t_philo));
+	if (!*ph)
 		return (-1);
-	*forks = malloc(sizeof(pthread_mutex_t) * philno);
-	if (!forks)
-		return (free(philos), -1);
-	*threads = malloc(sizeof(pthread_t) * philno);
-	if (!threads)
-		return (free(philos), free(forks), -1);
-	memset(*threads, 0, philno * sizeof(pthread_t));
-	memset(*forks, 0, philno * sizeof(pthread_mutex_t));
+	(*ph)->phil_threads = malloc(sizeof(pthread_t) * philno);
+	if (!(*ph)->phil_threads)
+		return (free(*ph), -1);
+	(*ph)->last_meal_start = malloc(sizeof(long) * philno);
+	if (!(*ph)->last_meal_start)
+		return (-1);
+	(*ph)->num_of_meals = malloc(sizeof(int) * philno);
+	if (!(*ph)->num_of_meals)
+		return (-1);
+	(*ph)->status = malloc(sizeof(int) * philno);
+	if (!(*ph)->status)
+		return (-1);
+	return (0);
+}
+
+int	alloc_init_mutexes(t_philo *ph, int philno)
+{
+	int	i;
+
+	ph->init_lock = malloc(sizeof(pthread_mutex_t));
+	if (!ph->init_lock)
+		return (-1);
+	if (pthread_mutex_init(ph->init_lock, NULL) != 0)
+		return (free(ph->init_lock), -1);
+	ph->forks = malloc(sizeof(pthread_mutex_t) * philno);
+	if (!ph->forks)
+		return (free(ph->init_lock), -1);
+	i = -1;
+	while (++i < philno)
+		if (pthread_mutex_init(&ph->forks[i], NULL) != 0)
+			return (free(ph->init_lock), free(ph->forks),
+				printf("Mutex init failed"), -1);
 	return (0);
 }
 
@@ -76,30 +95,18 @@ void	init_common_params(t_philo	*ph, t_params par)
 	int			i;
 
 	time0 = gettime();
+	ph->t0 = time0;
+	ph->id = 0;
+	ph->philno = par.philno;
+	ph->time_to_die = par.ttd;
+	ph->time_to_eat = par.tte;
+	ph->time_to_sleep = par.tts;
+	ph->max_meals = par.maxmeals;
 	i = -1;
-	while (++i < par.philno)
+	while (++i < ph->philno)
 	{
-		ph[i].t0 = time0;
-		ph[i].last_meal_start = time0;
-		ph[i].philno = par.philno;
-		ph[i].time_to_die = par.ttd;
-		ph[i].time_to_eat = par.tte;
-		ph[i].time_to_sleep = par.tts;
-		ph[i].num_of_meals = 0;
-		ph[i].status = 0;
-		ph[i].max_meals = par.maxmeals;
-	}
-}
-
-void	init_common_structs(t_philo *ph, pthread_mutex_t *forks,
-		pthread_t *threads)
-{
-	int	i;
-
-	i = -1;
-	while (++i < ph[0].philno)
-	{
-		ph[i].forks = forks;
-		ph[i].phil_threads = threads;
+		ph->last_meal_start[i] = time0;
+		ph->num_of_meals[i] = 0;
+		ph->status[i] = 0;
 	}
 }

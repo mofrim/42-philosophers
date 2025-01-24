@@ -1,4 +1,4 @@
-/* ************************************************************************** */
+/* ************************************************************************* */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   philo.c                                            :+:      :+:    :+:   */
@@ -6,21 +6,24 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 11:53:00 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/23 20:01:32 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/24 19:08:07 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
 int		any_dead(t_philo *ph);
-void	cleanup(t_philo **ph);
+void	cleanup(t_philo *ph, t_params *params);
 int		all_are_fed(t_philo *ph);
+int		watch_philos(t_philo *ph);
 
 int	main(int ac, char **av)
 {
 	t_philo		*philos;
 	t_params	*params;
+	int			wellbeing;
 
+	wellbeing = 0;
 	if (5 <= ac && ac <= 6)
 	{
 		params = parse_params(ac, av);
@@ -30,16 +33,24 @@ int	main(int ac, char **av)
 		return (printf(HELPTEXT), 1);
 	if (!philos)
 		return (printf("Init error!"), 22);
+	wellbeing = watch_philos(philos);
+	cleanup(philos, params);
+	return (wellbeing);
+}
+
+int	watch_philos(t_philo *ph)
+{
 	while (1)
 	{
 		usleep(9000);
-		if (any_dead(philos) || all_are_fed(philos))
+		if (all_are_fed(ph))
 		{
-			if (all_are_fed(philos))
-				printf("All are fed after %d meals\n", philos->max_meals);
-			else
-				printf("One philo dead. Ending simulation.\n");
-			cleanup(&philos);
+			printf("All are fed after %d meals\n", ph->max_meals);
+			return (0);
+		}
+		if (any_dead(ph))
+		{
+			printf("One philo dead. Ending simulation.\n");
 			return (1);
 		}
 	}
@@ -55,7 +66,7 @@ int	all_are_fed(t_philo *ph)
 
 	i = -1;
 	while (++i < ph[0].philno)
-		if (ph[i].status != 1)
+		if (ph->status[i] != 1)
 			return (0);
 	return (1);
 }
@@ -63,7 +74,7 @@ int	all_are_fed(t_philo *ph)
 /**
  * Check if any philo did not eat ttd since last_meal_start. If one of them
  * dies, set all philos stati to dead, hence making them cleanly finish their
- * threads. 
+ * threads.
  */
 int	any_dead(t_philo *ph)
 {
@@ -71,18 +82,22 @@ int	any_dead(t_philo *ph)
 	long int	time;
 	int			philo_died;
 
-	i = -1;
-	time = gettime();
 	philo_died = 0;
-	while (++i < ph[0].philno)
-		if (time - ph[i].last_meal_start > ph[0].time_to_die && \
-				ph[i].status == 0)
-			philo_died = printf("%ld %d died\n", time - ph[i].t0, ph[i].id);
+	time = gettime();
+	i = -1;
+	while (++i < ph->philno)
+	{
+		if (ph->status[i] == 2)
+			return (1);
+		if (time - ph->last_meal_start[i] > ph->time_to_die && \
+				ph->status[i] == 0)
+			philo_died = printf("%ld %d died\n", time - ph->t0, i + 1);
+	}
 	if (philo_died)
 	{
 		i = -1;
-		while (++i < ph[0].philno)
-			ph[i].status = 2;
+		while (++i < ph->philno)
+			ph->status[i] = 2;
 		return (1);
 	}
 	return (0);
@@ -99,21 +114,24 @@ int	any_dead(t_philo *ph)
  * pthread_mutex_destroy actually does nothing except checking that the mutex is
  * unlocked. **
  */
-void	cleanup(t_philo **ph)
+void	cleanup(t_philo *ph, t_params *params)
 {
 	int	i;
-	int	num_of_philos;
 
-	num_of_philos = ph[0]->philno;
 	i = -1;
-	while (++i < num_of_philos)
+	while (++i < ph->philno)
 	{
-		pthread_mutex_unlock(&ph[0]->forks[i]);
-		pthread_join(ph[0]->phil_threads[i], NULL);
-		pthread_mutex_destroy(&ph[0]->forks[i]);
+		pthread_mutex_unlock(&(ph->forks)[i]);
+		pthread_join(ph->phil_threads[i], NULL);
+		pthread_mutex_destroy(&(ph->forks)[i]);
 	}
-	i = -1;
-	free(ph[0]->phil_threads);
-	free(ph[0]->forks);
-	free(*ph);
+	pthread_mutex_destroy(ph->init_lock);
+	free(ph->num_of_meals);
+	free(ph->last_meal_start);
+	free(ph->status);
+	free(ph->init_lock);
+	free(ph->phil_threads);
+	free(ph->forks);
+	free(ph);
+	free(params);
 }
