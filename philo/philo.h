@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 12:35:39 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/23 17:05:51 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/24 13:27:20 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,18 +36,19 @@
 
 typedef struct s_philo
 {
-	long int		t0;
-	long int		last_meal_start;
+	long			t0;
+	long			*last_meal_start;
 	int				philno;
 	int				time_to_die;
 	int				time_to_eat;
 	int				time_to_sleep;
-	int				num_of_meals;
+	int				*num_of_meals;
 	int				max_meals;
-	int				status;
+	int				*status;
 	int				id;
 	pthread_t		*phil_threads;
 	pthread_mutex_t	*forks;
+	pthread_mutex_t	*init_lock;
 }	t_philo;
 
 typedef struct s_params
@@ -66,4 +67,5 @@ void		*philo(void	*phv);
 t_philo		*init_philos(t_params params);
 void		*nullmsg(char *msg);
 t_params	*parse_params(int ac, char **av);
+int			any_dead(t_philo *ph);
 #endif
