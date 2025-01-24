@@ -6,18 +6,18 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 20:44:24 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/23 20:01:00 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/24 10:33:02 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static void		init_common_params(t_philo	*ph, t_params par);
 static int		alloc_data_structs(t_philo **philos, pthread_mutex_t **forks,
 					pthread_t **threads, int phils);
-static void		init_common_structs(t_philo *ph, pthread_mutex_t *forks,
-					pthread_t *threads);
+static 	void	init_common_structs(t_philo *ph, pthread_mutex_t *forks,
+		pthread_t *threads, pthread_t *clock);
 static t_philo	*prep_philos(t_params par);
+static void		init_common_params(t_philo	*ph, t_params par, t_clock *clock);
 
 t_philo	*init_philos(t_params par)
 {
@@ -41,13 +41,18 @@ t_philo	*init_philos(t_params par)
 t_philo	*prep_philos(t_params par)
 {
 	t_philo			*ph;
+	t_clock			*clock;
+	pthread_t		*clock_thread;
 	pthread_t		*threads;
 	pthread_mutex_t	*forks;
 
+	if (init_clock(&clock) == -1)
+		return (NULL);
+	clock_thread = run_the_clock_thread(clock);
 	if (alloc_data_structs(&ph, &forks, &threads, par.philno) == -1)
 		return (NULL);
-	init_common_params(ph, par);
-	init_common_structs(ph, forks, threads);
+	init_common_params(ph, par, clock);
+	init_common_structs(ph, forks, threads, clock_thread);
 	return (ph);
 }
 
@@ -70,12 +75,13 @@ int	alloc_data_structs(t_philo **philos, pthread_mutex_t **forks, \
 
 /* Init the easy stuff. Explanation for status entry: 0 = normal, 1 = fed, 2 =
  * dead. */
-void	init_common_params(t_philo	*ph, t_params par)
+void	init_common_params(t_philo	*ph, t_params par, t_clock *clock)
 {
 	long int	time0;
 	int			i;
 
 	time0 = gettime();
+	clock->t0 = time0;
 	i = -1;
 	while (++i < par.philno)
 	{
@@ -88,11 +94,12 @@ void	init_common_params(t_philo	*ph, t_params par)
 		ph[i].num_of_meals = 0;
 		ph[i].status = 0;
 		ph[i].max_meals = par.maxmeals;
+		ph[i].clock = clock;
 	}
 }
 
 void	init_common_structs(t_philo *ph, pthread_mutex_t *forks,
-		pthread_t *threads)
+		pthread_t *threads, pthread_t *clock)
 {
 	int	i;
 
@@ -101,5 +108,6 @@ void	init_common_structs(t_philo *ph, pthread_mutex_t *forks,
 	{
 		ph[i].forks = forks;
 		ph[i].phil_threads = threads;
+		ph[i].clock_thread = clock;
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 12:35:39 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/23 17:05:51 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/24 10:07:35 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,14 @@
 # define HELPTEXT "usage: ./philo num_of_philos ttd tte tts \
 	(numoftimes_to_eat)\nAll values > 0!!!  >:("
 
+typedef struct s_clock
+{
+	long			t0;
+	long			*the_clock;
+	int 			*clock_stop;
+	pthread_mutex_t *clock_lock;
+}	t_clock;
+
 typedef struct s_philo
 {
 	long int		t0;
@@ -48,6 +56,8 @@ typedef struct s_philo
 	int				id;
 	pthread_t		*phil_threads;
 	pthread_mutex_t	*forks;
+	t_clock			*clock;
+	pthread_t		*clock_thread;
 }	t_philo;
 
 typedef struct s_params
@@ -66,4 +76,9 @@ void		*philo(void	*phv);
 t_philo		*init_philos(t_params params);
 void		*nullmsg(char *msg);
 t_params	*parse_params(int ac, char **av);
+
+void		*clock_routine(void *c);
+long		get_the_clock_time(t_clock *c);
+pthread_t	*run_the_clock_thread(t_clock *c);
+int			init_clock(t_clock **clock);
 #endif
