@@ -49,6 +49,7 @@ typedef struct s_philo
 	pthread_t		*phil_threads;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	*init_lock;
+	pthread_mutex_t	*print_lock;
 }	t_philo;
 
 typedef struct s_params
@@ -68,4 +69,5 @@ t_philo		*init_philos(t_params params);
 void		*nullmsg(char *msg);
 t_params	*parse_params(int ac, char **av);
 int			any_dead(t_philo *ph);
+int			print_logmsg(int id, char *msg, t_philo *ph);
 #endif
