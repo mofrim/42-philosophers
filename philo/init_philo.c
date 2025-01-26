@@ -17,6 +17,16 @@ static int		alloc_data_structs(t_philo **ph, int philno);
 static t_philo	*prep_philo(t_params par);
 static int		alloc_init_mutexes(t_philo *ph, int philno);
 
+/** 
+ * The main init func. 
+ *
+ * 1st, prepare the master t_philo struct.
+ * 2ndly, loop over the philo id numbers. This still feels a bit hacky but it
+ * works. Need the `init_lock` mutex in order to transfer the philo id to its
+ * thread. Inside the philo_thread `id` is assigned to a stack variable. After
+ * that the mutex is unlocked again so the loop in `init_philos` can set the
+ * phs->id var to the next id.
+ */
 t_philo	*init_philos(t_params par)
 {
 	int		i;
@@ -35,6 +45,7 @@ t_philo	*init_philos(t_params par)
 	return (phs);
 }
 
+/* Prepper di prep the philo struct. */
 t_philo	*prep_philo(t_params par)
 {
 	t_philo			*ph;
@@ -47,6 +58,7 @@ t_philo	*prep_philo(t_params par)
 	return (ph);
 }
 
+/* Allocations for everything that is not mutex. */
 int	alloc_data_structs(t_philo **ph, int philno)
 {
 	*ph = malloc(sizeof(t_philo));
@@ -67,6 +79,7 @@ int	alloc_data_structs(t_philo **ph, int philno)
 	return (0);
 }
 
+/* Mutex init and alloc. */
 int	alloc_init_mutexes(t_philo *ph, int philno)
 {
 	int	i;

@@ -19,7 +19,6 @@ SRC			= $(patsubst ./%.c,%.c,$(SRC_IN))
 OBJDIR	= obj
 OBJS		= $(patsubst %.c,$(OBJDIR)/%.o,$(SRC))
 CFLAGS	= -Wall -Werror -Wextra -pthread
-# CFLAGS	= -g -pthread
 HDR			= philo.h
 
 all: $(NAME)

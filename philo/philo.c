@@ -1,4 +1,4 @@
-/* ************************************************************************* */
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   philo.c                                            :+:      :+:    :+:   */
@@ -24,20 +24,23 @@ int	main(int ac, char **av)
 	int			wellbeing;
 
 	wellbeing = 0;
+	philos = NULL;
 	if (5 <= ac && ac <= 6)
 	{
 		params = parse_params(ac, av);
-		philos = init_philos(*params);
+		if (params)
+			philos = init_philos(*params);
 	}
 	else
 		return (printf(HELPTEXT), 1);
-	if (!philos)
+	if (!philos || !params)
 		return (printf("Init error!"), 22);
 	wellbeing = watch_philos(philos);
 	cleanup(philos, params);
 	return (wellbeing);
 }
 
+/* The watch loop. */
 int	watch_philos(t_philo *ph)
 {
 	while (1)
@@ -91,7 +94,7 @@ int	any_dead(t_philo *ph)
 			return (1);
 		if (time - ph->last_meal_start[i] > ph->time_to_die && \
 				ph->status[i] == 0)
-			philo_died = printf("%ld %d died\n", time - ph->t0, i + 1);
+			philo_died = print_logmsg(i + 1, "died", ph);
 	}
 	if (philo_died)
 	{

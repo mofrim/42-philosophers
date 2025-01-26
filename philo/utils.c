@@ -61,7 +61,7 @@ int	check_invalid_params(char **av, int ac)
 	return (0);
 }
 
-/* Parse the cmdline args into philo params. */
+/* Parse the cmdline args into philo params struct for further processing. */
 t_params	*parse_params(int ac, char **av)
 {
 	t_params	*params;
@@ -81,6 +81,28 @@ t_params	*parse_params(int ac, char **av)
 	return (params);
 }
 
+/**
+ * The magic print_logmsg func.
+ *
+ * This was a bit enigmatic. There is a huge difference between calling the
+ * `gettime` function before the mutex_lock or after it. With `gettime` before
+ * the timestamps still got mixed up (but only by 1ms!)!
+ * What was happening?
+ * So when i finally implemented the mutexed printing i was really puzzled why
+ * the mixed up timestamps still occured as if there was no mutexed printing (my
+ * very first and long standing version). So, this is how i think this happened:
+ * 1) Thread X finally locks the fork mutex and calls gettime.
+ * 2) Meanwhile another thread Y locks another fork and calls gettime, but 1ms
+ * later!
+ * 3) Somehow the for thread Y the gettime finishes earlier or the scheduler
+ * gives him priority for printing, voilà: mixed up timestamps.
+ *
+ * If we move the gettime into print_lock mutexed section in principle this
+ * might be a bit problematic too, because now, it might happen that the thread
+ * has to wait for the print lock so long that the actual timestamp is a couple
+ * of ms off from the real moment of locking the fork mutex. But, i think this
+ * is neglectable. In this case.
+ */
 int	print_logmsg(int id, char *msg, t_philo *ph)
 {
 	long	timestamp;
