@@ -29,7 +29,7 @@ void	*philo(void *phv)
 	{
 		if (!ph->num_of_meals[id - 1] && (id % 2))
 			usleep((ph->time_to_eat / 2) * 1000);
-		if (ph->status[id - 1] == 2)
+		if (ph->status[id - 1] != 0)
 			return (NULL);
 		ph_eat(ph, id);
 		ph_sleep(ph, id);
@@ -37,15 +37,9 @@ void	*philo(void *phv)
 	}
 }
 
-/**
- * The eating function of philo.
- *
- * To avoid corrupting mutex state by mutliple mutex_unlocks, i intruduced the
- * 'locked' flag. This ensures even in case we enter this function in a already
- * dead state (which could happen if philo dies during initial sleep) that
- * mutex_unlock is not called on a not locked mutex. This could lead to errors
- * later especially mutex_destroy reports errno 16 (EBUSY) with mutexes like
- * this.
+/* Waiting for the fork function. Try to get a mutex_lock on one fork. The
+ * little bit smelly `first` flag is a side-effect of this abstraction.
+ * Otherwise we will not be able to pick right/left fork using this function.
  */
 static void	wait_for_fork(t_philo *ph, int *gotfork, int id, int first)
 {
@@ -58,6 +52,18 @@ static void	wait_for_fork(t_philo *ph, int *gotfork, int id, int first)
 		print_logmsg(id, "has taken a fork", ph);
 }
 
+/**
+ * The eating function of philo.
+ *
+ * This is the most complex part of a philos life.
+ *
+ * To avoid corrupting mutex state by mutliple mutex_unlocks, i intruduced the
+ * 'gotfork' flag. This ensures even in case we enter this function in a already
+ * dead state (which could happen if philo dies during initial sleep) that
+ * mutex_unlock is not called on a not locked mutex. This could lead to errors
+ * later especially mutex_destroy reports errno 16 (EBUSY) with mutexes like
+ * this.
+ */
 void	ph_eat(t_philo *ph, int id)
 {
 	int		gotfork;
