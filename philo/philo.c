@@ -129,6 +129,7 @@ void	cleanup(t_philo *ph, t_params *params)
 	free(ph->num_of_meals);
 	free(ph->last_meal_start);
 	free(ph->status);
+	free(ph->print_lock);
 	free(ph->init_lock);
 	free(ph->phil_threads);
 	free(ph->forks);

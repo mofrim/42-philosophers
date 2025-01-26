@@ -12,13 +12,7 @@
 
 #include "philo.h"
 
-static int	ft_isdigit(int c)
-{
-	if (48 <= c && c <= 57)
-		return (2048);
-	return (0);
-}
-
+/* All-in-one atoi, isspace & isdigit. */
 int	ft_atoi(char *s)
 {
 	int	num;
@@ -33,7 +27,7 @@ int	ft_atoi(char *s)
 		sgn = -1;
 	if (*s == '-' || *s == '+')
 		s++;
-	while (ft_isdigit(*s))
+	while (48 <= *s && *s <= 57)
 		num = num * 10 + *s++ - '0';
 	return (num * sgn);
 }
@@ -47,6 +41,7 @@ long	gettime(void)
 	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
 }
 
+/* Check cmdline params. Currently philno <= 1000000. */
 int	check_invalid_params(char **av, int ac)
 {
 	int	philno;
@@ -66,6 +61,7 @@ int	check_invalid_params(char **av, int ac)
 	return (0);
 }
 
+/* Parse the cmdline args into philo params. */
 t_params	*parse_params(int ac, char **av)
 {
 	t_params	*params;
@@ -83,4 +79,15 @@ t_params	*parse_params(int ac, char **av)
 	if (ac == 6)
 		params->maxmeals = ft_atoi(av[5]);
 	return (params);
+}
+
+int	print_logmsg(int id, char *msg, t_philo *ph)
+{
+	long	timestamp;
+
+	pthread_mutex_lock(ph->print_lock);
+	timestamp = gettime() - ph->t0;
+	printf("%ld %d %s\n", timestamp, id, msg);
+	pthread_mutex_unlock(ph->print_lock);
+	return (1);
 }

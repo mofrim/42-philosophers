@@ -76,6 +76,11 @@ int	alloc_init_mutexes(t_philo *ph, int philno)
 		return (-1);
 	if (pthread_mutex_init(ph->init_lock, NULL) != 0)
 		return (free(ph->init_lock), -1);
+	ph->print_lock = malloc(sizeof(pthread_mutex_t));
+	if (!ph->print_lock)
+		return (-1);
+	if (pthread_mutex_init(ph->print_lock, NULL) != 0)
+		return (free(ph->init_lock), free(ph->print_lock), -1);
 	ph->forks = malloc(sizeof(pthread_mutex_t) * philno);
 	if (!ph->forks)
 		return (free(ph->init_lock), -1);

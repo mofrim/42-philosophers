@@ -55,13 +55,12 @@ static void	wait_for_fork(t_philo *ph, int *gotfork, int id, int first)
 		pthread_mutex_lock(&ph->forks[id % ph->philno]);
 	(*gotfork)++;
 	if (!any_dead(ph))
-		printf("%ld %d has taken a fork\n", gettime() - ph->t0, id);
+		print_logmsg(id, "has taken a fork", ph);
 }
 
 void	ph_eat(t_philo *ph, int id)
 {
 	int		gotfork;
-	long	meal_start;
 
 	gotfork = 0;
 	if (!any_dead(ph))
@@ -70,9 +69,8 @@ void	ph_eat(t_philo *ph, int id)
 		wait_for_fork(ph, &gotfork, id, 0);
 	if (ph->philno != 1 && !ph->status[id - 1] && !any_dead(ph) && gotfork == 2)
 	{
-		meal_start = gettime();
-		ph->last_meal_start[id - 1] = meal_start;
-		printf("%ld %d is eating\n", meal_start - ph->t0, id);
+		print_logmsg(id, "is eating", ph);
+		ph->last_meal_start[id - 1] = gettime();
 		usleep (ph->time_to_eat * 1000);
 		ph->num_of_meals[id - 1]++;
 		if (ph->max_meals && ph->num_of_meals[id - 1] == ph->max_meals)
@@ -89,7 +87,7 @@ void	ph_sleep(t_philo *ph, int id)
 {
 	if (ph->philno != 1 && !ph->status[id - 1] && !any_dead(ph))
 	{
-		printf("%ld %d is sleeping\n", gettime() - ph->t0, id);
+		print_logmsg(id, "is sleeping", ph);
 		usleep(ph->time_to_sleep * 1000);
 	}
 }
@@ -99,7 +97,7 @@ void	ph_think(t_philo *ph, int id)
 {
 	if (ph->philno != 1 && !ph->status[id - 1] && !any_dead(ph))
 	{
-		printf("%ld %d is thinking\n", gettime() - ph->t0, id);
+		print_logmsg(ph->id, "is thinking", ph);
 		if (ph->philno % 2)
 			usleep((ph->time_to_eat * 2 - ph->time_to_sleep) * 1000);
 	}
