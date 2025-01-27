@@ -21,11 +21,11 @@ int	main(int ac, char **av)
 	t_semas	*semas;
 	t_philo	*proto_philo;
 
-	semas = malloc(sizeof(t_semas));
 	initial_unlink_semas();
 	if (!((5 <= ac && ac <= 6) && !check_invalid_params(av, ac)))
 		return (printf("usage: ./philo num_of_philos ttd tte tts" \
 					" (numoftimes_to_eat)"), 22);
+	semas = malloc(sizeof(t_semas));
 	init_semas(semas, ft_atoi(av[1]));
 	proto_philo = make_proto_philo(ac, av, semas);
 	philo_dinner(proto_philo);
