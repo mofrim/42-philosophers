@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 11:53:00 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/17 22:48:09 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/27 00:07:30 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,8 @@ int	main(int ac, char **av)
  * in this case. Meaning: the semaphores will not get unlinked which will block
  * the execution of the program the next time it is run. In order to prevent
  * this just bluntly unlink them before we do anything.
+ * BTW: the semas a *real* objects in the filesystem and can be found ander
+ * `/dev/shm/sem.SEMNAME` ;)
  */
 static void	initial_unlink_semas(void)
 {

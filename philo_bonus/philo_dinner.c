@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/15 10:26:22 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/17 22:53:08 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/27 00:20:41 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ static void	start_death_thread(pthread_t *kthread, t_philo *pp)
 {
 	if (pthread_create(kthread, NULL, death_thread, (void *)pp) != 0)
 	{
-		printf("Thread creation failed");
+		printf("Thread creation failed with error: %d\n", errno);
 		exit(1);
 	}
 }
