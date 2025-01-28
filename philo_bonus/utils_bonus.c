@@ -6,25 +6,13 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 09:03:17 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/15 12:35:54 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/28 12:22:14 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-static int	ft_isspace(char c)
-{
-	return (c == '\f' || c == '\n' || c == '\r' || c == '\t'
-		|| c == ' ' || c == '\v');
-}
-
-static int	ft_isdigit(int c)
-{
-	if (48 <= c && c <= 57)
-		return (2048);
-	return (0);
-}
-
+/* All-in-one atoi, isspace & isdigit. */
 int	ft_atoi(char *s)
 {
 	int	num;
@@ -32,13 +20,14 @@ int	ft_atoi(char *s)
 
 	num = 0;
 	sgn = 1;
-	while (ft_isspace(*s))
+	while (*s == '\f' || *s == '\n' || *s == '\r' || *s == '\t'
+		|| *s == ' ' || *s == '\v')
 		s++;
 	if (*s == '-')
 		sgn = -1;
 	if (*s == '-' || *s == '+')
 		s++;
-	while (ft_isdigit(*s))
+	while (48 <= *s && *s <= 57)
 		num = num * 10 + *s++ - '0';
 	return (num * sgn);
 }
@@ -69,4 +58,15 @@ t_bool	check_invalid_params(char **av, int ac)
 		if (ft_atoi(av[5]) <= 0)
 			return (TRUE);
 	return (FALSE);
+}
+
+int	print_logmsg(char *msg, t_philo *ph)
+{
+	long	timestamp;
+
+	sem_wait(ph->print);
+	timestamp = gettime() - ph->t0;
+	printf("%ld %d %s\n", timestamp, ph->id, msg);
+	sem_post(ph->print);
+	return (1);
 }

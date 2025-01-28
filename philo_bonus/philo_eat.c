@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/15 10:43:22 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/17 22:50:48 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/28 12:24:29 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static void	wait_for_fork(t_philo *pp, int *gotfork)
 	sem_wait(pp->forks);
 	(*gotfork)++;
 	if (!any_dead(pp))
-		printf("%ld %d has taken a fork\n", gettime() - pp->t0, pp->id);
+		print_logmsg("has taken a fork", pp);
 }
 
 static void	increment_fed_sema(t_philo pp)
@@ -30,7 +30,6 @@ static void	increment_fed_sema(t_philo pp)
 void	philo_eat(t_philo *pp)
 {
 	int			gotfork;
-	long int	meal_start;
 
 	gotfork = 0;
 	if (!any_dead(pp))
@@ -39,9 +38,8 @@ void	philo_eat(t_philo *pp)
 		wait_for_fork(pp, &gotfork);
 	if (pp->philno != 1 && !any_dead(pp) && gotfork == 2)
 	{
-		meal_start = gettime() - pp->t0;
-		pp->last_meal_start = meal_start;
-		printf("%ld %d is eating\n", meal_start, pp->id);
+		print_logmsg("is eating", pp);
+		pp->last_meal_start = gettime() - pp->t0;
 		usleep (pp->time_to_eat * 1000);
 		pp->num_of_meals++;
 		if (pp->max_meals && pp->num_of_meals == pp->max_meals)

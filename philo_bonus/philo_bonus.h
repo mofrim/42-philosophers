@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 12:35:39 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/17 22:50:48 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/28 12:22:34 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ typedef struct s_semas
 	sem_t	*forks;
 	sem_t	*fed;
 	sem_t	*fedcheck;
+	sem_t	*print;
 }	t_semas;
 
 /*
@@ -83,6 +84,7 @@ typedef struct s_philo
 	sem_t		*fed;
 	sem_t		*fedcheck;
 	sem_t		*forks;
+	sem_t		*print;
 	t_semas		*semas;
 }	t_philo;
 
@@ -97,5 +99,6 @@ void		philo_eat(t_philo *pp);
 t_bool		any_dead(t_philo *p);
 void		init_semas(t_semas *semas, int philno);
 t_bool		all_fed(t_philo *p);
+int			print_logmsg(char *msg, t_philo *ph);
 
 #endif

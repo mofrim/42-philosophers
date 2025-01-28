@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/15 10:26:22 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/27 00:20:41 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/28 12:25:58 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,12 +48,12 @@ static void	philo_subroutine(t_philo *pp)
 		philo_eat(pp);
 		if (pp->philno != 1 && !any_dead(pp) && !pp->status)
 		{
-			printf("%ld %d is sleeping\n", gettime() - pp->t0, pp->id);
+			print_logmsg("is sleeping", pp);
 			usleep (pp->time_to_sleep * 1000);
 		}
 		if (pp->philno != 1 && !any_dead(pp) && !pp->status)
 		{
-			printf("%ld %d is thinking\n", gettime() - pp->t0, pp->id);
+			print_logmsg("is thinking", pp);
 			if (pp->philno % 2)
 				usleep((pp->time_to_eat * 2 - pp->time_to_sleep) * 1000);
 		}
@@ -92,7 +92,7 @@ static void	*death_thread(void *arg)
 		time = gettime() - ph->t0;
 		if (time - ph->last_meal_start >= ph->time_to_die)
 		{
-			printf("%ld %d died\n", time, ph->id);
+			print_logmsg("died", ph);
 			ph->status = 2;
 			sem_post(ph->death);
 			i = -1;

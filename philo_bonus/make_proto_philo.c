@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/15 11:01:54 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/15 19:13:42 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/28 12:21:40 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ t_philo	*make_proto_philo(int ac, char **av, t_semas *semas)
 	ph->fed = semas->fed;
 	ph->fedcheck = semas->fedcheck;
 	ph->forks = semas->forks;
+	ph->print = semas->print;
 	ph->semas = semas;
 	init_common_params(ph, ac, av, time0);
 	return (ph);
