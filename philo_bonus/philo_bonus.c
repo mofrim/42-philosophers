@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 11:53:00 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/28 12:52:56 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/28 14:14:51 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@ static void	cleanup(t_semas *semas, t_philo *pp)
 	sem_close(semas->deathcheck);
 	sem_close(semas->fed);
 	sem_close(semas->fedcheck);
+	sem_close(semas->print);
 	sem_unlink("/forks");
 	sem_unlink("/death");
 	sem_unlink("/deathcheck");

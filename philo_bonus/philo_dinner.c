@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/15 10:26:22 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/28 12:25:58 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/28 14:16:59 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,7 @@ static void	cleanup_and_exit(pthread_t *kthread, t_philo *pp)
 	sem_close(pp->deathcheck);
 	sem_close(pp->fed);
 	sem_close(pp->fedcheck);
+	sem_close(pp->print);
 	free(pp->semas);
 	free(pp);
 	exit(0);
