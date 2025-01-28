@@ -6,11 +6,24 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 11:53:00 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/27 00:07:30 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/28 12:52:56 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
+
+/* Well... this is weird. When printing straigt to a terminal there was no need
+ * for semaphored printng function `print_logmsg`. But when redirecting output
+ * to a file timestamps get completely messed up due to the subprocesses and
+ * printf's full-buffered mode in this case. This still happens with
+ * `print_logmsg` being used now but can be worked around by using one of the
+ * following commands when calling `philo_bonus`:
+ * 
+ * - `script -q c "./philo_bonus 400 500 100 100 10` log.log
+ * - `stdbuf -oL ./philo_bonus 400 500 100 100 10 > log.log`
+ *
+ * These command force line-buffered output again.
+ */
 
 static void	initial_unlink_semas(void);
 static void	cleanup(t_semas *semas, t_philo *pp);
@@ -57,6 +70,7 @@ static void	initial_unlink_semas(void)
 	sem_unlink("/deathcheck");
 	sem_unlink("/fed");
 	sem_unlink("/fedcheck");
+	sem_unlink("/print");
 }
 
 /* Well, cleanup. */
@@ -72,6 +86,7 @@ static void	cleanup(t_semas *semas, t_philo *pp)
 	sem_unlink("/deathcheck");
 	sem_unlink("/fed");
 	sem_unlink("/fedcheck");
+	sem_unlink("/print");
 	free(semas);
 	free(pp);
 }
