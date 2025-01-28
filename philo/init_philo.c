@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 20:44:24 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/25 14:12:09 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/01/28 11:24:39 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@ static int		alloc_data_structs(t_philo **ph, int philno);
 static t_philo	*prep_philo(t_params par);
 static int		alloc_init_mutexes(t_philo *ph, int philno);
 
-/** 
- * The main init func. 
+/**
+ * The main init func.
  *
  * 1st, prepare the master t_philo struct.
  * 2ndly, loop over the philo id numbers. This still feels a bit hacky but it
@@ -26,6 +26,10 @@ static int		alloc_init_mutexes(t_philo *ph, int philno);
  * thread. Inside the philo_thread `id` is assigned to a stack variable. After
  * that the mutex is unlocked again so the loop in `init_philos` can set the
  * phs->id var to the next id.
+ *
+ * Doing pthread_create in a while loop because then every thread gets surely
+ * created 🤞 and we do not have thread creation failing due to ressources
+ * unavailability.
  */
 t_philo	*init_philos(t_params par)
 {
@@ -33,14 +37,16 @@ t_philo	*init_philos(t_params par)
 	t_philo	*phs;
 
 	phs = prep_philo(par);
+	if (!phs)
+		return (NULL);
 	i = -1;
 	while (++i < par.philno)
 	{
 		pthread_mutex_lock(phs->init_lock);
 		phs->id = i + 1;
-		if (pthread_create(&(phs->phil_threads)[i], NULL, philo,
+		while (pthread_create(&(phs->phil_threads)[i], NULL, philo,
 			(void *)phs) != 0)
-			return (printf("Thread creation failed"), NULL);
+			;
 	}
 	return (phs);
 }
@@ -101,7 +107,7 @@ int	alloc_init_mutexes(t_philo *ph, int philno)
 	while (++i < philno)
 		if (pthread_mutex_init(&ph->forks[i], NULL) != 0)
 			return (free(ph->init_lock), free(ph->forks),
-				printf("Mutex init failed"), -1);
+				printf("Mutex init failed\n"), -1);
 	return (0);
 }
 
