@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Philosophers Visualizer | 42 Project Simulator</title>
+		<meta name="description" content="Visualize the actions of philosophers (eating, thinking, sleeping) in real-time with our interactive tool, designed for 42 students and programming enthusiasts.">
+		<meta name="keywords" content="42, Philosopher, Visualization, Simulator, 42 Project, Logs, Programming, Thinking, Open Source, Coding School">
+		<meta name="author" content="rom98759">
+		<meta name="robots" content="index, follow">
+		<meta property="og:title" content="Philosophers Visualizer | 42 Project Simulator">
+		<meta property="og:description" content="An interactive tool to visualize the actions of philosophers in 42 projects. Perfect for developers and students!">
+		<meta property="og:image" content="https://rom98759.github.io/Philosophers-visualizer/icon.png">
+		<meta property="og:url" content="https://rom98759.github.io/Philosophers-visualizer/">
+		<meta property="og:type" content="website">
+		<meta name="google-site-verification" content="UDqK4m8rxqYO8mEZksjK0NN4eigWracgqHiRbgQ3Zjk" />
+		<link rel="canonical" href="https://rom98759.github.io/Philosophers-visualizer/">
+		<link rel="icon" type="image/png" href="icon.png">
+		<link rel="stylesheet" href="styles.css">
+	</head>
+
+	<body>
+		<header>
+			<h1>🤔💭 Philosophers Visualizer 📚🗿</h1>
+		</header>
+		<main>
+			<textarea id="logs-input" placeholder="Paste your logs here :&#10;<timestamp> <philosopher_number> <action>"></textarea>
+			<button id="generate-button">Generate Chart</button>
+			<div id="controls-container">
+				<div id="zoom-controls">
+					<label for="zoom-slider">Zoom:</label>
+					<input type="range" id="zoom-slider" min="0.5" max="5" step="0.1"
+						value="0.5">
+					<span id="zoom-level">0.5x</span>
+				</div>
+				<!-- <div id="legend-container"> -->
+				<!-- 	<div id="legend"> -->
+				<!-- 		<h3>Legend:</h3> -->
+				<!-- 		<ul> -->
+				<!-- 			<li><span class="legend-item eating"></span> Eating</li> -->
+				<!-- 			<li><span class="legend-item thinking"></span> Thinking</li> -->
+				<!-- 			<li><span class="legend-item sleeping"></span> Sleeping</li> -->
+				<!-- 			<li><span class="legend-item unknown"></span> Fork taken / Dead</li> -->
+				<!-- 		</ul> -->
+				<!-- 	</div> -->
+				<!-- </div> -->
+			</div>
+			<div id="legend-container">
+				<div id="legend">
+					<h3>Legend:</h3>
+					<div class="legend-entry">
+						( <span class="legend-item eating"></span>Eating)
+					</div>
+					<div class="legend-entry">
+						(<span class="legend-item thinking"></span>Thinking)
+					</div>
+					<div class="legend-entry">
+						(<span class="legend-item sleeping"></span>Sleeping)
+					</div>
+					<div class="legend-entry">
+						(<span class="legend-item unknown"></span>Fork taken / Dead)
+					</div>
+				</div>
+			</div>
+			<div id="gantt-container">
+				<!-- Diagram of the philosophers' actions -->
+			</div>
+		</main>
+		<script src="script.js"></script>
+	</body>
+</html>

@@ -1,0 +1,200 @@
+body {
+	font-family: Arial, sans-serif;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+header {
+	background-color: #259b38c4;
+	color: white;
+	text-align: center;
+	padding: 1em;
+}
+
+#logs-input, button {
+	width: 70%;
+	max-width: 600px;
+	margin: 0 auto;
+	margin-bottom: 1em;
+	display: block;
+}
+
+main {
+	padding: 1em;
+}
+
+button {
+	padding: 0.7em;
+	background-color: #259b38c4;
+	color: white;
+	border: none;
+	cursor: pointer;
+	font-size: 1em;
+	margin-bottom: 1em;
+}
+
+button:hover {
+	background-color: #3F5A47;
+}
+
+textarea {
+	width: 100%;
+	height: 150px;
+	margin-bottom: 1em;
+	padding: 0.5em;
+	font-size: 1em;
+	resize: none;
+}
+
+#zoom-controls {
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 10px;
+	margin-bottom: 20px;
+}
+
+#zoom-slider {
+	width: 100px;
+}
+
+#zoom-level {
+	font-size: 1em;
+}
+
+/* #legend-container { */
+/* 	display: flex; */
+/* 	justify-content: space-between; */
+/* 	align-items: center; */
+/* 	margin-bottom: 20px; */
+/* } */
+
+#legend-container {
+	display: flex;
+	/* flex-direction: column; */
+	gap: 1em;
+	overflow-x: auto;
+	white-space: nowrap;
+	padding-bottom: 20px;
+	margin-left: 200px
+}
+
+#gantt-container {
+	display: flex;
+	flex-direction: column;
+	gap: 1em;
+	overflow-x: auto;
+	white-space: nowrap;
+	padding-bottom: 20px;
+}
+
+.philosopher-row {
+	display: flex;
+	align-items: center;
+	position: relative;
+	height: 30px;
+}
+
+.philosopher-label {
+	width: 150px;
+	text-align: right;
+	margin-right: 2em;
+	font-weight: bold;
+}
+
+.bar {
+	position: absolute;
+	height: 100%;
+	border-radius: 4px;
+	text-align: center;
+	font-size: 12px;
+	color: white;
+	overflow: hidden;
+	max-width: 100%;
+	margin-left: 160px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.bar.eating {
+	background-color: #fbb4ae;
+}
+
+.bar.thinking {
+	background-color: #ccebc5;
+}
+
+.bar.sleeping {
+	background-color: #b3cde3;
+}
+
+.bar.unknown {
+	background-color: #929292a2;
+}
+
+.bar:hover::after {
+	position: absolute;
+	top: -30px;
+	left: 0;
+	background-color: #333;
+	color: white;
+	padding: 5px;
+	font-size: 0.9em;
+	border-radius: 3px;
+	white-space: pre-line;
+	z-index: 10;
+	display: block;
+}
+
+#controls-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-bottom: 20px;
+	gap: 40px;
+}
+
+#legend-container {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 20px;
+}
+
+#legend {
+	display: flex;
+	font-size: 1em;
+	align-items: center;
+	gap: 15px;
+}
+
+.legend-item {
+	width: 15px;
+	height: 15px;
+	display: inline-block;
+	margin-right: 10px;
+	margin-left: 2px;
+}
+
+.legend-entry {
+	display: inline-flex;
+	align-items: center;
+}
+
+.eating { background-color: #fbb4ae; }
+.thinking { background-color: #ccebc5; }
+.sleeping { background-color: #b3cde3; }
+.unknown { background-color: #929292a2; }
+
+.legend-item span {
+	display: inline-block;
+	width: 15px;
+	height: 15px;
+}
+
+.legend-item h3 {
+	margin-right: 0;
+	font-size: 1.2em;
+}
