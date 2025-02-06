@@ -7,4 +7,5 @@ I also made a quick writeup of the "math" behind the Philosophers Problem. You
 can find it in the [philo_math.pdf](https://github.com/mofrim/42-philosophers/blob/main/philo_math.pdf).
 
 Also i included my modified version of [Romain's](https://github.com/rom98759)
-fantastic Philosophers Visualizer.
+fantastic Philosophers Visualizer. I changed the layout a little bit and added
+error printing for the first timestamps which are not in order.
