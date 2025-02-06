@@ -98,13 +98,15 @@ void	ph_sleep(t_philo *ph, int id)
 	}
 }
 
-/* Thinking function. */
+/* Thinking function. The thinking syncronization is not really needed for
+ * manda, because mutexes_lock seems to almost certainly work with the FIFO
+ * principle. For explanation see my PDF. */
 void	ph_think(t_philo *ph, int id)
 {
 	if (ph->philno != 1 && !ph->status[id - 1] && !any_dead(ph))
 	{
-		print_logmsg(ph->id, "is thinking", ph);
-		if (ph->philno % 2)
+		print_logmsg(id, "is thinking", ph);
+		if (ph->philno % 2 && (ph->time_to_sleep < 2 * ph->time_to_eat))
 			usleep((ph->time_to_eat * 2 - ph->time_to_sleep) * 1000);
 	}
 }

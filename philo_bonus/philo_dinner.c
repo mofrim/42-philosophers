@@ -54,7 +54,7 @@ static void	philo_subroutine(t_philo *pp)
 		if (pp->philno != 1 && !any_dead(pp) && !pp->status)
 		{
 			print_logmsg("is thinking", pp);
-			if (pp->philno % 2)
+			if (pp->philno % 2 && (pp->time_to_sleep < 2 * pp->time_to_eat))
 				usleep((pp->time_to_eat * 2 - pp->time_to_sleep) * 1000);
 		}
 		if (any_dead(pp) || pp->status == 1)
