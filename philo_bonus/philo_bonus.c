@@ -6,20 +6,20 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 11:53:00 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/28 14:14:51 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/02/05 15:44:03 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-/* Well... this is weird. When printing straigt to a terminal there was no need
- * for semaphored printng function `print_logmsg`. But when redirecting output
+/* Well... this is weird. When printing straight to a terminal there was no need
+ * for semaphored printing function `print_logmsg`. But when redirecting output
  * to a file timestamps get completely messed up due to the subprocesses and
  * printf's full-buffered mode in this case. This still happens with
  * `print_logmsg` being used now but can be worked around by using one of the
  * following commands when calling `philo_bonus`:
  * 
- * - `script -q c "./philo_bonus 400 500 100 100 10` log.log
+ * - `script -q -c "./philo_bonus 400 500 100 100 10" log.log`
  * - `stdbuf -oL ./philo_bonus 400 500 100 100 10 > log.log`
  *
  * These command force line-buffered output again.

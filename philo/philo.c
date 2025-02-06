@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 11:53:00 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/24 19:08:07 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/02/05 14:44:08 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int	main(int ac, char **av)
 	return (wellbeing);
 }
 
-/* The watch loop. */
+/* The watch loop. Read the function names to find out what is going in here.*/
 int	watch_philos(t_philo *ph)
 {
 	while (1)
