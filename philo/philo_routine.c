@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 20:42:36 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/25 14:12:55 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/02/06 12:20:00 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,12 @@ static void	ph_eat(t_philo *ph, int id);
 static void	ph_sleep(t_philo *ph, int id);
 static void	ph_think(t_philo *ph, int id);
 
-/* The main philosopher thread routine. */
+/** The main philosopher thread routine.
+ *
+ * The transfer of the id is a bit of a hack. But otherwise i would have gotten
+ * into problems with my single philo struct approach. The only purpose of the
+ * ph->init_lock mutex this is.
+ */
 void	*philo(void *phv)
 {
 	t_philo	*ph;
