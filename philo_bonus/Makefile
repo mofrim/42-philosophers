@@ -6,7 +6,7 @@
 #    By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/01 11:45:58 by fmaurer           #+#    #+#              #
-#    Updated: 2025/02/07 16:20:32 by fmaurer          ###   ########.fr        #
+#    Updated: 2025/02/07 16:27:05 by fmaurer          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,7 +25,7 @@ OBJDIR	= obj
 OBJS		= $(patsubst %.c,$(OBJDIR)/%.o,$(SRC))
 HDR			= philo_bonus.h
 
-CFLAGS	= -Wall -Werror -Wextra
+CFLAGS			= -Wall -Werror -Wextra
 TSAN_CFLAGS	= -g -Wall -Werror -Wextra -fsanitize=thread
 
 all: $(NAME)

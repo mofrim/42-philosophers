@@ -6,20 +6,20 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 15:44:58 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/02/07 15:46:55 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/02/07 16:26:37 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-void set_state_locked_int(int *statevar, int val, t_philo *ph)
+void	set_state_locked_int(int *statevar, int val, t_philo *ph)
 {
 	sem_wait(ph->state);
 	*statevar = val;
 	sem_post(ph->state);
 }
 
-void set_state_locked_long(long *statevar, long val, t_philo *ph)
+void	set_state_locked_long(long *statevar, long val, t_philo *ph)
 {
 	sem_wait(ph->state);
 	*statevar = val;
