@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 11:53:00 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/02/07 15:30:42 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/02/07 16:17:28 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,7 @@ int	main(int ac, char **av)
 
 	initial_unlink_semas();
 	if (!((5 <= ac && ac <= 6) && !check_invalid_params(av, ac)))
-		return (printf("usage: ./philo num_of_philos ttd tte tts" \
-					" (numoftimes_to_eat)"), 22);
+		return (printf(HELPTEXT), 22);
 	semas = malloc(sizeof(t_semas));
 	init_semas(semas, ft_atoi(av[1]));
 	proto_philo = make_proto_philo(ac, av, semas);

@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 12:35:39 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/02/07 15:47:31 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/02/07 16:26:10 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,10 @@
 
 /* SEM_MAX_VALUE */
 # include <limits.h>
+
+# define HELPTEXT "usage: ./philo num_of_philos ttd tte tts \
+(numoftimes_to_eat)\n       - All values > 0!!!  >:(\n \
+      - num_of_philos <= 100000\n"
 
 /* i want a boolean, just for fun */
 typedef int	t_bool;
@@ -104,7 +108,7 @@ t_bool		all_fed(t_philo *p);
 int			print_logmsg(char *msg, t_philo *ph);
 void		*death_thread(void *arg);
 void		start_death_thread(pthread_t *kthread, t_philo *pp);
-void 		set_state_locked_int(int *statevar, int val, t_philo *ph);
-void 		set_state_locked_long(long *statevar, long val, t_philo *ph);
+void		set_state_locked_int(int *statevar, int val, t_philo *ph);
+void		set_state_locked_long(long *statevar, long val, t_philo *ph);
 
 #endif
