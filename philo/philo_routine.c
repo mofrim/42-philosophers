@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 20:42:36 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/02/06 12:20:00 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/02/07 12:20:40 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,3 +115,57 @@ void	ph_think(t_philo *ph, int id)
 			usleep((ph->time_to_eat * 2 - ph->time_to_sleep) * 1000);
 	}
 }
+
+// This is one of the warnings TSAN spit out before i implemented min/max
+// ordering for the fork pickup on main-branch:
+
+// WARNING: ThreadSanitizer: lock-order-inversion (potential deadlock) (pid=2822770)
+//   Cycle in lock order graph: M0 (0x722800000028) => M1 (0x722800000050) => M2 (0x722800000078) => M3 (0x722800000000) => M0
+//
+//   Mutex M1 acquired here while holding mutex M0 in thread T2:
+//     #0 pthread_mutex_lock ??:? (philo+0x75add)
+//     #1 wait_for_fork /home/frido/c0de/42/theCore/10-philosophers/philoGH/philo/philo_routine.c:? (philo+0xfc241)
+//     #2 ph_eat /home/frido/c0de/42/theCore/10-philosophers/philoGH/philo/philo_routine.c:81 (philo+0xfc241)
+//     #3 philo /home/frido/c0de/42/theCore/10-philosophers/philoGH/philo/philo_routine.c:40 (philo+0xfc241)
+//
+//     Hint: use TSAN_OPTIONS=second_deadlock_stack=1 to get more informative warning message
+//
+//   Mutex M2 acquired here while holding mutex M1 in thread T3:
+//     #0 pthread_mutex_lock ??:? (philo+0x75add)
+//     #1 wait_for_fork /home/frido/c0de/42/theCore/10-philosophers/philoGH/philo/philo_routine.c:? (philo+0xfc241)
+//     #2 ph_eat /home/frido/c0de/42/theCore/10-philosophers/philoGH/philo/philo_routine.c:81 (philo+0xfc241)
+//     #3 philo /home/frido/c0de/42/theCore/10-philosophers/philoGH/philo/philo_routine.c:40 (philo+0xfc241)
+//
+//   Mutex M3 acquired here while holding mutex M2 in thread T4:
+//     #0 pthread_mutex_lock ??:? (philo+0x75add)
+//     #1 wait_for_fork /home/frido/c0de/42/theCore/10-philosophers/philoGH/philo/philo_routine.c:? (philo+0xfc241)
+//     #2 ph_eat /home/frido/c0de/42/theCore/10-philosophers/philoGH/philo/philo_routine.c:81 (philo+0xfc241)
+//     #3 philo /home/frido/c0de/42/theCore/10-philosophers/philoGH/philo/philo_routine.c:40 (philo+0xfc241)
+//
+//   Mutex M0 acquired here while holding mutex M3 in thread T1:
+//     #0 pthread_mutex_lock ??:? (philo+0x75add)
+//     #1 wait_for_fork /home/frido/c0de/42/theCore/10-philosophers/philoGH/philo/philo_routine.c:? (philo+0xfc241)
+//     #2 ph_eat /home/frido/c0de/42/theCore/10-philosophers/philoGH/philo/philo_routine.c:81 (philo+0xfc241)
+//     #3 philo /home/frido/c0de/42/theCore/10-philosophers/philoGH/philo/philo_routine.c:40 (philo+0xfc241)
+//
+//   Thread T2 (tid=2822774, running) created by main thread at:
+//     #0 pthread_create ??:? (philo+0x757d2)
+//     #1 init_philos /home/frido/c0de/42/theCore/10-philosophers/philoGH/philo/init_philo.c:52 (philo+0xfc9eb)
+//     #2 main /home/frido/c0de/42/theCore/10-philosophers/philoGH/philo/philo.c:32 (philo+0xfaef8)
+//
+//   Thread T3 (tid=2822775, running) created by main thread at:
+//     #0 pthread_create ??:? (philo+0x757d2)
+//     #1 init_philos /home/frido/c0de/42/theCore/10-philosophers/philoGH/philo/init_philo.c:52 (philo+0xfc9eb)
+//     #2 main /home/frido/c0de/42/theCore/10-philosophers/philoGH/philo/philo.c:32 (philo+0xfaef8)
+//
+//   Thread T4 (tid=2822776, running) created by main thread at:
+//     #0 pthread_create ??:? (philo+0x757d2)
+//     #1 init_philos /home/frido/c0de/42/theCore/10-philosophers/philoGH/philo/init_philo.c:52 (philo+0xfc9eb)
+//     #2 main /home/frido/c0de/42/theCore/10-philosophers/philoGH/philo/philo.c:32 (philo+0xfaef8)
+//
+//   Thread T1 (tid=2822773, running) created by main thread at:
+//     #0 pthread_create ??:? (philo+0x757d2)
+//     #1 init_philos /home/frido/c0de/42/theCore/10-philosophers/philoGH/philo/init_philo.c:52 (philo+0xfc9eb)
+//     #2 main /home/frido/c0de/42/theCore/10-philosophers/philoGH/philo/philo.c:32 (philo+0xfaef8)
+//
+// SUMMARY: ThreadSanitizer: lock-order-inversion (potential deadlock) ??:? in pthread_mutex_lock
