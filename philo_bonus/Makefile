@@ -6,7 +6,7 @@
 #    By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/01 11:45:58 by fmaurer           #+#    #+#              #
-#    Updated: 2025/02/07 15:17:00 by fmaurer          ###   ########.fr        #
+#    Updated: 2025/02/07 16:07:50 by fmaurer          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,9 @@ SRC_IN	= ./philo_bonus.c \
 					./philo_eat.c \
 					./any_dead_all_fed.c \
 					./make_proto_philo.c \
-					./semas.c
+					./semas.c \
+					./death_thread.c \
+					./set_state_locked.c
 SRC			= $(patsubst ./%.c,%.c,$(SRC_IN))
 OBJDIR	= obj
 OBJS		= $(patsubst %.c,$(OBJDIR)/%.o,$(SRC))

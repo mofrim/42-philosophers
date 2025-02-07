@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/15 10:43:22 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/28 12:24:29 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/02/07 15:49:57 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,13 +39,13 @@ void	philo_eat(t_philo *pp)
 	if (pp->philno != 1 && !any_dead(pp) && gotfork == 2)
 	{
 		print_logmsg("is eating", pp);
-		pp->last_meal_start = gettime() - pp->t0;
+		set_state_locked_long(&pp->last_meal_start, gettime() - pp->t0, pp);
 		usleep (pp->time_to_eat * 1000);
 		pp->num_of_meals++;
 		if (pp->max_meals && pp->num_of_meals == pp->max_meals)
 		{
 			increment_fed_sema(*pp);
-			pp->status = 1;
+			set_state_locked_int(&pp->status, 1, pp);
 		}
 	}
 	if (pp->philno != 1 && gotfork)

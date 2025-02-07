@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 11:53:00 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/02/05 15:44:03 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/02/07 15:30:42 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ static void	initial_unlink_semas(void)
 	sem_unlink("/fed");
 	sem_unlink("/fedcheck");
 	sem_unlink("/print");
+	sem_unlink("/state");
 }
 
 /* Well, cleanup. */
@@ -82,12 +83,14 @@ static void	cleanup(t_semas *semas, t_philo *pp)
 	sem_close(semas->fed);
 	sem_close(semas->fedcheck);
 	sem_close(semas->print);
+	sem_close(semas->state);
 	sem_unlink("/forks");
 	sem_unlink("/death");
 	sem_unlink("/deathcheck");
 	sem_unlink("/fed");
 	sem_unlink("/fedcheck");
 	sem_unlink("/print");
+	sem_unlink("/state");
 	free(semas);
 	free(pp);
 }
