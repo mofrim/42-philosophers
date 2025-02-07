@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 11:53:00 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/02/05 14:44:08 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/02/07 15:04:02 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,9 +68,16 @@ int	all_are_fed(t_philo *ph)
 	int	i;
 
 	i = -1;
-	while (++i < ph[0].philno)
+	state_lock(ph);
+	while (++i < ph->philno)
+	{
 		if (ph->status[i] != 1)
+		{
+			state_unlock(ph);
 			return (0);
+		}
+	}
+	state_unlock(ph);
 	return (1);
 }
 
@@ -81,17 +88,18 @@ int	all_are_fed(t_philo *ph)
  */
 int	any_dead(t_philo *ph)
 {
-	int			i;
-	long int	time;
-	int			philo_died;
+	int		i;
+	long	time;
+	int		philo_died;
 
 	philo_died = 0;
-	time = gettime();
 	i = -1;
+	state_lock(ph);
+	time = gettime();
 	while (++i < ph->philno)
 	{
 		if (ph->status[i] == 2)
-			return (1);
+			return (state_unlock(ph), 1);
 		if (time - ph->last_meal_start[i] > ph->time_to_die && \
 				ph->status[i] == 0)
 			philo_died = print_logmsg(i + 1, "died", ph);
@@ -101,9 +109,9 @@ int	any_dead(t_philo *ph)
 		i = -1;
 		while (++i < ph->philno)
 			ph->status[i] = 2;
-		return (1);
+		return (state_unlock(ph), 1);
 	}
-	return (0);
+	return (state_unlock(ph), 0);
 }
 
 /**
@@ -115,7 +123,9 @@ int	any_dead(t_philo *ph)
  * might hold.  The mutex must be unlocked on entrance. ** In the Linux‐ Threads
  * implementation,  no  resources are associated with mutex objects, thus
  * pthread_mutex_destroy actually does nothing except checking that the mutex is
- * unlocked. **
+ * unlocked.
+ *
+ * ... but still we do it for explictness.
  */
 void	cleanup(t_philo *ph, t_params *params)
 {
@@ -123,19 +133,18 @@ void	cleanup(t_philo *ph, t_params *params)
 
 	i = -1;
 	while (++i < ph->philno)
-	{
-		pthread_mutex_unlock(&(ph->forks)[i]);
 		pthread_join(ph->phil_threads[i], NULL);
-		pthread_mutex_destroy(&(ph->forks)[i]);
-	}
-	pthread_mutex_destroy(ph->init_lock);
+	i = -1;
+	while (++i < ph->philno)
+		pthread_mutex_destroy(&ph->forks[i]);
 	free(ph->num_of_meals);
 	free(ph->last_meal_start);
 	free(ph->status);
 	free(ph->print_lock);
-	free(ph->init_lock);
+	free(ph->state_lock);
 	free(ph->phil_threads);
 	free(ph->forks);
+	free(ph->args);
 	free(ph);
 	free(params);
 }
