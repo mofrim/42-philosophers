@@ -6,7 +6,7 @@
 #    By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/01 11:45:58 by fmaurer           #+#    #+#              #
-#    Updated: 2025/02/07 16:07:50 by fmaurer          ###   ########.fr        #
+#    Updated: 2025/02/07 16:20:32 by fmaurer          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -42,12 +42,15 @@ $(NAME): $(OBJS)
 philo-tsan: $(SRC)
 	$(CC) $(TSAN_CFLAGS) -o $@ $^
 
+re-tsan: fclean philo-tsan
+
 clean:
 	rm -rf $(OBJDIR)
 
 fclean: clean
 	rm -f $(NAME)
+	rm -f philo-tsan
 
 re: fclean $(NAME)
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re re-tsan
