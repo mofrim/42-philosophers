@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 20:44:24 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/28 11:24:39 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/02/07 11:01:03 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,22 +30,32 @@ static int		alloc_init_mutexes(t_philo *ph, int philno);
  * Doing pthread_create in a while loop because then every thread gets surely
  * created 🤞 and we do not have thread creation failing due to ressources
  * unavailability.
+ *
+ * A little bit dirty is the args memebership in t_philo. This is only needed to
+ * be able to free the args in the end. We cannot free args in init_philos, bc
+ * the threads still access this mem while they are running.
  */
+
 t_philo	*init_philos(t_params par)
 {
-	int		i;
-	t_philo	*phs;
+	int				i;
+	t_philo			*phs;
+	t_phthread_arg	*args;
 
+	args = malloc(sizeof(t_phthread_arg) * par.philno);
+	if (!args)
+		return (NULL);
 	phs = prep_philo(par);
 	if (!phs)
 		return (NULL);
+	phs->args = args;
 	i = -1;
 	while (++i < par.philno)
 	{
-		pthread_mutex_lock(phs->init_lock);
-		phs->id = i + 1;
+		args[i].id = i + 1;
+		args[i].ph = phs;
 		while (pthread_create(&(phs->phil_threads)[i], NULL, philo,
-			(void *)phs) != 0)
+			&args[i]) != 0)
 			;
 	}
 	return (phs);
@@ -73,15 +83,17 @@ int	alloc_data_structs(t_philo **ph, int philno)
 	(*ph)->phil_threads = malloc(sizeof(pthread_t) * philno);
 	if (!(*ph)->phil_threads)
 		return (free(*ph), -1);
+	memset((*ph)->phil_threads, 0, sizeof(pthread_t) * philno);
 	(*ph)->last_meal_start = malloc(sizeof(long) * philno);
 	if (!(*ph)->last_meal_start)
-		return (-1);
+		return (free(*ph), -1);
 	(*ph)->num_of_meals = malloc(sizeof(int) * philno);
 	if (!(*ph)->num_of_meals)
-		return (-1);
+		return (free((*ph)->last_meal_start), free(*ph), -1);
 	(*ph)->status = malloc(sizeof(int) * philno);
 	if (!(*ph)->status)
-		return (-1);
+		return (free((*ph)->last_meal_start), free((*ph)->num_of_meals),
+			free(*ph), -1);
 	return (0);
 }
 
@@ -90,24 +102,24 @@ int	alloc_init_mutexes(t_philo *ph, int philno)
 {
 	int	i;
 
-	ph->init_lock = malloc(sizeof(pthread_mutex_t));
-	if (!ph->init_lock)
+	ph->state_lock = malloc(sizeof(pthread_mutex_t));
+	if (!ph->state_lock)
 		return (-1);
-	if (pthread_mutex_init(ph->init_lock, NULL) != 0)
-		return (free(ph->init_lock), -1);
+	if (pthread_mutex_init(ph->state_lock, NULL) != 0)
+		return (free(ph->state_lock), -1);
 	ph->print_lock = malloc(sizeof(pthread_mutex_t));
 	if (!ph->print_lock)
 		return (-1);
 	if (pthread_mutex_init(ph->print_lock, NULL) != 0)
-		return (free(ph->init_lock), free(ph->print_lock), -1);
+		return (free(ph->print_lock), free(ph->print_lock), -1);
 	ph->forks = malloc(sizeof(pthread_mutex_t) * philno);
 	if (!ph->forks)
-		return (free(ph->init_lock), -1);
+		return (free(ph->print_lock), free(ph->print_lock), -1);
 	i = -1;
 	while (++i < philno)
 		if (pthread_mutex_init(&ph->forks[i], NULL) != 0)
-			return (free(ph->init_lock), free(ph->forks),
-				printf("Mutex init failed\n"), -1);
+			return (free(ph->print_lock), free(ph->print_lock),
+				free(ph->forks), -1);
 	return (0);
 }
 
@@ -120,7 +132,6 @@ void	init_common_params(t_philo	*ph, t_params par)
 
 	time0 = gettime();
 	ph->t0 = time0;
-	ph->id = 0;
 	ph->philno = par.philno;
 	ph->time_to_die = par.ttd;
 	ph->time_to_eat = par.tte;
