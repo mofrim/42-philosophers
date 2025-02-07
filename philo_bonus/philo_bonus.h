@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 12:35:39 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/28 12:22:34 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/02/07 15:47:31 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ typedef struct s_semas
 	sem_t	*fed;
 	sem_t	*fedcheck;
 	sem_t	*print;
+	sem_t	*state;
 }	t_semas;
 
 /*
@@ -85,6 +86,7 @@ typedef struct s_philo
 	sem_t		*fedcheck;
 	sem_t		*forks;
 	sem_t		*print;
+	sem_t		*state;
 	t_semas		*semas;
 }	t_philo;
 
@@ -100,5 +102,9 @@ t_bool		any_dead(t_philo *p);
 void		init_semas(t_semas *semas, int philno);
 t_bool		all_fed(t_philo *p);
 int			print_logmsg(char *msg, t_philo *ph);
+void		*death_thread(void *arg);
+void		start_death_thread(pthread_t *kthread, t_philo *pp);
+void 		set_state_locked_int(int *statevar, int val, t_philo *ph);
+void 		set_state_locked_long(long *statevar, long val, t_philo *ph);
 
 #endif
