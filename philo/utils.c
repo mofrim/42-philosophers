@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 09:03:17 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/01/23 15:40:58 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/02/14 11:32:10 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int	check_invalid_params(char **av, int ac)
 	int	philno;
 
 	philno = ft_atoi(av[1]);
-	if (1 > philno || philno > 1000000)
+	if (1 > philno || philno > 100000)
 		return (-1);
 	if (ft_atoi(av[2]) <= 0)
 		return (-1);
