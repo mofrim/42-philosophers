@@ -1,43 +1,15 @@
-<<<<<<< HEAD
-philo/*
-=======
->>>>>>> fa3c537 (fix?!: nice up init_philo funcs++)
-.cache
+.cache/
 .direnv/
-.gitignore
 .envrc
-obj/
-<<<<<<< HEAD
 compile_commands.json
-shell.nix
-!philo/
-!philo/Makefile
-!philo/README.md
-!philo/init_philo.c
-!philo/philo.c
-!philo/philo.h
-!philo/philo_routine.c
-!philo/utils.c
-
-philo_bonus/philo_bonus
-# !philo_bonus/
-# !philo_bonus/Makefile
-# !philo_bonus/README.md
-# !philo_bonus/init_philo_bonus.c
-# !philo_bonus/philo_bonus.c
-# !philo_bonus/philo_bonus.h
-# !philo_bonus/utils_bonus.c
-# !philo_bonus/summon_philos.c
-# !philo_bonus/philo_eat.c
-# !philo_bonus/any_dead.c
-# !philo_bonus/make_proto_philo.c
-#
-=======
-core
-log*
-compile_commands.json
-shell.nix
+philo/.cache/
+philo/compile_commands.json
+philo/obj/
 philo/philo
-philo_bonus/philo_bonus
-playground/
->>>>>>> fa3c537 (fix?!: nice up init_philo funcs++)
+philo/philo-tsan
+philo/tsan0.log
+philo/tsan1.log
+philo_bonus/.cache/
+philo_bonus/compile_commands.json
+philo_bonus/philo-tsan
+shell.nix
