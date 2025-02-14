@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 11:53:00 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/02/07 15:04:02 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/02/14 11:29:23 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int	main(int ac, char **av)
 	else
 		return (printf(HELPTEXT), 1);
 	if (!philos || !params)
-		return (printf("Init error!"), 22);
+		return (printf(HELPTEXT), 22);
 	wellbeing = watch_philos(philos);
 	cleanup(philos, params);
 	return (wellbeing);
