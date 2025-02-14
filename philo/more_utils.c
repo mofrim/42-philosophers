@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 22:19:02 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/02/07 00:19:25 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/02/14 11:13:22 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,4 +35,3 @@ void	state_unlock(t_philo *ph)
 {
 	pthread_mutex_unlock(ph->state_lock);
 }
-
