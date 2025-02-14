@@ -10,3 +10,4 @@ core
 compile_commands.json
 shell.nix
 philo_bonus/philo_bonus
+philo_bonus/philo-tsan
