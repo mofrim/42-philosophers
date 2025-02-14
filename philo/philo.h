@@ -6,7 +6,7 @@
 /*   By: fmaurer <fmaurer42@posteo.de>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 12:35:39 by fmaurer           #+#    #+#             */
-/*   Updated: 2025/02/07 01:18:39 by fmaurer          ###   ########.fr       */
+/*   Updated: 2025/02/14 11:29:11 by fmaurer          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,8 @@
 # include <string.h>
 
 # define HELPTEXT "usage: ./philo num_of_philos ttd tte tts \
-	(numoftimes_to_eat)\nAll values > 0!!!  >:("
+(numoftimes_to_eat)\n       - All values > 0!!!  >:(\n \
+      - num_of_philos <= 100000\n"
 
 typedef struct s_philo
 {
